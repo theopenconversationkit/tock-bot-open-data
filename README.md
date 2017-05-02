@@ -6,7 +6,7 @@ Two options available:
 
 ## Use a complete docker installation
 
-The setup is explained in the [Tock docker project](https://github.com/voyages-sncf-technologies/tock-docker#user-content-open-data-bot-example) 
+The setup is explained in the [Tock docker project](https://github.com/voyages-sncf-technologies/tock-docker#user-content-run-the-open-data-bot-example) 
 
 ## Or run the code in the IDE
 
