@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/voyages-sncf-technologies/tock-bot-open-data.png)](https://travis-ci.org/voyages-sncf-technologies/tock-bot-open-data)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.vsct.tock/tock-bot-open-data/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.vsct.tock/tock-bot-open-data)
+
+Example of chatbot using Tock and open data APIs.
 
 # How to start
 
