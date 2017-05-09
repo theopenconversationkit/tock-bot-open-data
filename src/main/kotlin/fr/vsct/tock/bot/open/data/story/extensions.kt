@@ -25,8 +25,8 @@ import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.nlp.entity.date.DateEntityValue
-import ft.vsct.tock.nlp.api.client.model.Entity
-import ft.vsct.tock.nlp.api.client.model.EntityType
+import fr.vsct.tock.nlp.api.client.model.Entity
+import fr.vsct.tock.nlp.api.client.model.EntityType
 import java.time.LocalDateTime
 import java.time.ZoneId
 

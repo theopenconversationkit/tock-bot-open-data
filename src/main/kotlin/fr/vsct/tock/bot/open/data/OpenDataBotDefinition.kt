@@ -20,7 +20,7 @@
 package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.definition.BotDefinitionBase
-import ft.vsct.tock.nlp.api.client.model.NlpEngineType
+import fr.vsct.tock.nlp.api.client.model.NlpEngineType
 
 /**
  *
