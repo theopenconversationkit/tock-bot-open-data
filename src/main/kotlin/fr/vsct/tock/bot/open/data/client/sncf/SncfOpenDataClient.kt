@@ -70,7 +70,7 @@ object SncfOpenDataClient {
                             .addSerializer(LocalDateTime::class, LocalDateTimeSerializer(dateFormat))
                     ))
                     .build()
-                    .create(SncfOpenDataApi::class)
+                    .create()
 
     private val placesCache: Cache<String, List<Place>> = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(12, TimeUnit.HOURS).build()
     private val departuresCache: Cache<Pair<String, LocalDateTime>, List<Departure>> = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(1, TimeUnit.MINUTES).build()
