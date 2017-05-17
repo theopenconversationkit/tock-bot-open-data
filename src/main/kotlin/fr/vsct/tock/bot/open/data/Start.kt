@@ -24,7 +24,6 @@ import fr.vsct.tock.bot.installBots
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerBot
 import fr.vsct.tock.nlp.entity.ValueResolverRepository
-import fr.vsct.tock.shared.jackson.mapper
 
 fun main(args: Array<String>) {
     Start.start()
@@ -36,7 +35,7 @@ fun main(args: Array<String>) {
 object Start {
 
     fun start() {
-        ValueResolverRepository.registerType(mapper, PlaceValue::class)
+        ValueResolverRepository.registerType(PlaceValue::class)
 
         with(OpenDataConfiguration) {
             addMessengerConnector(pageId, pageToken, applicationSecret, webhookVerifyToken)

@@ -31,6 +31,7 @@ import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.engine.action.SendChoice
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
+import java.lang.Math.min
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -58,26 +59,26 @@ object DeparturesStoryHandler : StoryHandlerBase() {
             var departuresOffset = 0
 
             //check entities
-            bus.action.let { action ->
+            action.let { action ->
                 //handle button click
                 if (action is SendChoice) {
-                    origin = loadOrigin(action.parameters[DeparturesStoryHandler.originParam]!!)
+                    origin = findPlace(action.parameters[DeparturesStoryHandler.originParam]!!)
                     departuresOffset = action.parameters[DeparturesStoryHandler.offsetParam]!!.toInt()
                 }
                 //do we have origin? If not, handle generic location intent
-                else if (originPlace == null && intent == SecondaryIntent.indicate_location.intent && locationPlace != null) {
-                    origin = returnAndRemoveLocation()
+                else if (origin == null && intent == SecondaryIntent.indicate_location.intent && location != null) {
+                    origin = returnsAndRemoveLocation()
                 }
             }
 
 
             //now build the response
-            originPlace.let { originPlace ->
-                if (originPlace == null) {
+            origin.let { origin ->
+                if (origin == null) {
                     end("De quelle gare souhaitez vous voir les départs?")
                 } else {
-                    send("Départs de la gare de ${originPlace.name} :")
-                    val departures = SncfOpenDataClient.departures(originPlace, ZonedDateTime.now(ZoneId.of("Europe/Paris")).toLocalDateTime())
+                    send("Départs de la gare de ${origin.name} :")
+                    val departures = SncfOpenDataClient.departures(origin, ZonedDateTime.now(ZoneId.of("Europe/Paris")).toLocalDateTime())
                     if (departures.isEmpty()) {
                         end("Oups, aucun départ trouvé actuellement, désolé :(")
                     }
@@ -95,8 +96,8 @@ object DeparturesStoryHandler : StoryHandlerBase() {
                                 messengerPostback(
                                         "Départs suivants",
                                         SecondaryIntent.more_elements.intent,
-                                        DeparturesStoryHandler.originParam to origin!!.content!!,
-                                        DeparturesStoryHandler.offsetParam to Math.min(departures.size, 4).toString()))
+                                        DeparturesStoryHandler.originParam to origin.name,
+                                        DeparturesStoryHandler.offsetParam to min(departures.size, 4).toString()))
                         end()
                     }
                 }

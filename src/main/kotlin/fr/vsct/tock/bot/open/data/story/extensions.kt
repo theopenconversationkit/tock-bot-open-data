@@ -24,56 +24,59 @@ import fr.vsct.tock.bot.engine.dialog.ContextValue
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
-import fr.vsct.tock.nlp.entity.date.DateEntityValue
 import fr.vsct.tock.nlp.api.client.model.Entity
 import fr.vsct.tock.nlp.api.client.model.EntityType
+import fr.vsct.tock.nlp.entity.date.DateEntityRange
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-var BotBus.origin: ContextValue?
-    get() = entities["origin"]?.value
-    set(value) = changeEntityValue("origin", value)
+private val originEntity = Entity(EntityType("vsc:location"), "origin")
+private val destinationEntity = Entity(EntityType("vsc:location"), "destination")
+private val locationEntity = Entity(EntityType("vsc:location"), "location")
+private val departureDateEntity = Entity(EntityType("duckling:datetime"), "departure_date")
 
-val BotBus.originPlace: Place? get() = origin.place()
-
-val BotBus.location: ContextValue? get() = entities["location"]?.value
-
-val BotBus.locationPlace: Place? get() = location.place()
-
-var BotBus.destination: ContextValue?
-    get() = entities["destination"]?.value
-    set(value) = changeEntityValue("destination", value)
-
-val BotBus.destinationPlace: Place? get() = destination.place()
-
-val BotBus.departureDate: ContextValue? get() = entities["departure_date"]?.value
-
-val BotBus.departureDateValue: LocalDateTime? get() = (departureDate?.value as DateEntityValue?)?.date?.withZoneSameInstant(ZoneId.of("Europe/Paris"))?.toLocalDateTime()
-
-fun BotBus.returnAndRemoveLocation(): ContextValue? {
-    return location.apply {
-        removeEntityValue("location")
-    }
-}
-
-fun BotBus.loadOrigin(location: String): ContextValue {
-    return ContextValue(
-            Entity(EntityType("vsc:location"), "origin"),
-            SncfOpenDataClient.bestPlaceMatch(location)?.let { PlaceValue(it) },
-            location)
-}
-
-fun Place?.toValue(): PlaceValue? = if (this == null) null else PlaceValue(this)
-
-fun ContextValue?.placeValue(): PlaceValue? {
+private fun ContextValue?.placeValue(): PlaceValue? {
     return if (this == null) null
     else if (evaluated) {
         value as PlaceValue
-    } else let {
-        SncfOpenDataClient.bestPlaceMatch(content!!)?.let {
-            changeValue(it.toValue()).value as PlaceValue
+    } else {
+        content?.let {
+            findPlaceValue(it)?.let {
+                changeValue(it).value as PlaceValue
+            }
         }
     }
 }
 
-fun ContextValue?.place(): Place? = placeValue()?.place
+private fun findPlaceValue(name: String): PlaceValue? {
+    return SncfOpenDataClient.bestPlaceMatch(name)?.let {
+        PlaceValue(it)
+    }
+}
+
+fun findPlace(name: String): Place? {
+    return findPlaceValue(name)?.place
+}
+
+private fun Place?.toValue(): PlaceValue? = if (this == null) null else PlaceValue(this)
+
+var BotBus.origin: Place?
+    get() = entities[originEntity.role]?.value?.placeValue()?.place
+    set(value) = changeEntityValue(originEntity, value?.let { PlaceValue(value) })
+
+val BotBus.location: Place? get() = entities[locationEntity.role]?.value?.placeValue()?.place
+
+
+var BotBus.destination: Place?
+    get() = entities[destinationEntity.role]?.value?.placeValue()?.place
+    set(value) = changeEntityValue(destinationEntity, value?.let { PlaceValue(value) })
+
+
+val BotBus.departureDate: LocalDateTime?
+    get() = entityValue<DateEntityRange>(departureDateEntity.role)?.start()?.withZoneSameInstant(ZoneId.of("Europe/Paris"))?.toLocalDateTime()
+
+fun BotBus.returnsAndRemoveLocation(): Place? {
+    return location.apply {
+        removeEntityValue("location")
+    }
+}

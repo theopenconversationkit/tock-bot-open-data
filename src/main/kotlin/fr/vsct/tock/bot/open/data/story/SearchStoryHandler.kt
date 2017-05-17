@@ -45,36 +45,36 @@ object SearchStoryHandler : StoryHandlerBase() {
     override fun action(bus: BotBus) {
         with(bus) {
             //handle context
-            if (destinationPlace == null) {
+            if (destination == null) {
                 //handle generic location
-                if (intent == SecondaryIntent.indicate_location.intent && locationPlace != null) {
-                    destination = returnAndRemoveLocation()
+                if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+                    destination = returnsAndRemoveLocation()
                 }
             }
 
-            if (originPlace == null) {
+            if (origin == null) {
                 //handle generic location
-                if (intent == SecondaryIntent.indicate_location.intent && locationPlace != null) {
-                    origin = returnAndRemoveLocation()
+                if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+                    origin = returnsAndRemoveLocation()
                 }
             }
 
             //build the response
-            destinationPlace.let { destination ->
+            destination.let { destination ->
                 if (destination == null) {
                     end("Pour quelle destination?")
                 } else {
-                    originPlace.let { origin ->
+                    origin.let { origin ->
                         if (origin == null) {
                             end("Pour quelle origine?")
                         } else {
-                            departureDateValue.let { departureDate ->
+                            departureDate.let { departureDate ->
                                 if (departureDate == null) {
                                     end("Quand souhaitez-vous partir?")
                                 } else {
                                     send("De ${origin.name} à ${destination.name}")
                                     send("Départ le ${dateFormat.format(departureDate)} vers ${timeFormat.format(departureDate)}", breath)
-                                    val journeys = SncfOpenDataClient.journey(originPlace!!, destinationPlace!!, departureDateValue!!)
+                                    val journeys = SncfOpenDataClient.journey(origin, destination, departureDate)
                                     if (journeys.isEmpty()) {
                                         end("Désolé, aucun itinéraire trouvé :(")
                                     } else {
