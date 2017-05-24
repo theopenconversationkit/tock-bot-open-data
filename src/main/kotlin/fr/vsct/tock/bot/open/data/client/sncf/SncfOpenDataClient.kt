@@ -55,7 +55,7 @@ object SncfOpenDataClient {
 
     private val api: SncfOpenDataApi =
             retrofitBuilderWithTimeout(
-                    30,
+                    30000,
                     object : Interceptor {
                         override fun intercept(chain: Interceptor.Chain): Response {
                             return chain.proceed(chain.request()
