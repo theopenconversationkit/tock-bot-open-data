@@ -22,34 +22,29 @@ package fr.vsct.tock.bot.open.data.client.sncf
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration
 import fr.vsct.tock.bot.open.data.client.sncf.model.Departure
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.shared.addJacksonConverter
+import fr.vsct.tock.shared.cache.getOrCache
 import fr.vsct.tock.shared.create
-import fr.vsct.tock.shared.error
 import fr.vsct.tock.shared.jackson.addDeserializer
 import fr.vsct.tock.shared.jackson.addSerializer
 import fr.vsct.tock.shared.jackson.mapper
 import fr.vsct.tock.shared.retrofitBuilderWithTimeout
-import mu.KotlinLogging
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
+import java.time.temporal.ChronoUnit.MINUTES
 
 
 /**
  *
  */
 object SncfOpenDataClient {
-
-    private val logger = KotlinLogging.logger {}
 
     private val dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
 
@@ -72,28 +67,10 @@ object SncfOpenDataClient {
                     .build()
                     .create()
 
-    private val placesCache: Cache<String, List<Place>> = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(12, TimeUnit.HOURS).build()
-    private val departuresCache: Cache<Pair<String, LocalDateTime>, List<Departure>> = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(1, TimeUnit.MINUTES).build()
-
-
-    fun <K, V> Cache<K, V>.getOrPut(key: K,
-                                    defaultValue: () -> V): V? {
-        return getIfPresent(key) ?: try {
-            val result = defaultValue.invoke()
-            if (result != null) {
-                put(key, result)
-            }
-            result
-        } catch(t: Throwable) {
-            logger.error(t)
-            null
-        }
-    }
-
     fun places(query: String): List<Place> {
-        return placesCache.getOrPut(query) {
-            api.places(query).execute().body().places
-        } ?: emptyList()
+        return getOrCache(query, "place") {
+            api.places(query).execute().body()
+        }?.places ?: emptyList()
     }
 
     fun bestPlaceMatch(query: String): Place? {
@@ -105,8 +82,8 @@ object SncfOpenDataClient {
     }
 
     fun departures(from: Place, datetime: LocalDateTime): List<Departure> {
-        return departuresCache.getOrPut(from.id to datetime) {
-            api.departures(from.id, dateFormat.format(datetime)).execute().body().departures
-        } ?: emptyList()
+        return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "departures") {
+            api.departures(from.id, dateFormat.format(datetime)).execute().body()
+        }?.departures ?: emptyList()
     }
 }
