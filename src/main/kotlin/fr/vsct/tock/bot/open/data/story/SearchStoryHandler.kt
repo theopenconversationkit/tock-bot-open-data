@@ -28,34 +28,27 @@ import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import fr.vsct.tock.bot.open.data.client.sncf.model.Section
+import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
+import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
+import fr.vsct.tock.translator.I18nLabelKey
+import fr.vsct.tock.translator.by
 
 /**
  *
  */
 object SearchStoryHandler : StoryHandlerBase() {
 
-    /**
-     * To format departure datetime.
-     */
-    val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd MMMM").withLocale(Locale.FRENCH)
-    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
-
     override fun action(bus: BotBus) {
         with(bus) {
-            //handle context
-            if (destination == null) {
-                //handle generic location
-                if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+            //handle generic location intent
+            if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+                if (destination == null) {
                     destination = returnsAndRemoveLocation()
-                }
-            }
-
-            if (origin == null) {
-                //handle generic location
-                if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+                } else if (origin == null) {
                     origin = returnsAndRemoveLocation()
+                } else {
+                    destination = returnsAndRemoveLocation()
                 }
             }
 
@@ -72,8 +65,8 @@ object SearchStoryHandler : StoryHandlerBase() {
                                 if (departureDate == null) {
                                     end("Quand souhaitez-vous partir?")
                                 } else {
-                                    send("De ${origin.name} à ${destination.name}")
-                                    send("Départ le ${dateFormat.format(departureDate)} vers ${timeFormat.format(departureDate)}", breath)
+                                    send("De {0} à {1}", origin, destination)
+                                    send("Départ le {0} vers {1}", breath, departureDate by dateFormat, departureDate by timeFormat)
                                     val journeys = SncfOpenDataClient.journey(origin, destination, departureDate)
                                     if (journeys.isEmpty()) {
                                         end("Désolé, aucun itinéraire trouvé :(")
@@ -84,16 +77,18 @@ object SearchStoryHandler : StoryHandlerBase() {
                                                 sections.first().let { section ->
                                                     withMessengerGeneric(
                                                             messengerGenericElement(
-                                                                    "${section.from!!.name} - ${section.to!!.name}",
-                                                                    "Départ à ${timeFormat.format(section.stopDateTimes!!.first().departureDateTime)}, arrivée à ${timeFormat.format(section.stopDateTimes.last().arrivalDateTime)}")
+                                                                    section.title(),
+                                                                    section.description()
+                                                            )
                                                     )
                                                 }
                                             } else {
                                                 withMessengerList(
                                                         sections.map { section ->
                                                             messengerListElement(
-                                                                    "${section.from!!.name} - ${section.to!!.name}",
-                                                                    "Départ à ${timeFormat.format(section.stopDateTimes!!.first().departureDateTime)}, arrivée à ${timeFormat.format(section.stopDateTimes.last().arrivalDateTime)}")
+                                                                    section.title(),
+                                                                    section.description()
+                                                            )
                                                         },
                                                         ListElementStyle.compact
                                                 )
@@ -108,5 +103,17 @@ object SearchStoryHandler : StoryHandlerBase() {
                 }
             }
         }
+    }
+
+    private fun Section.title(): I18nLabelKey {
+        return i18n("{0} - {1}", from, to)
+    }
+
+    private fun Section.description(): I18nLabelKey {
+        return i18n(
+                "Départ à {0}, arrivée à {1}",
+                stopDateTimes!!.first().departureDateTime by timeFormat,
+                stopDateTimes.last().arrivalDateTime by dateFormat
+        )
     }
 }

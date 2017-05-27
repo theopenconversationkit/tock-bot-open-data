@@ -31,6 +31,9 @@ import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.engine.action.SendChoice
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
+import fr.vsct.tock.bot.open.data.client.sncf.model.Departure
+import fr.vsct.tock.translator.I18nLabelKey
+import fr.vsct.tock.translator.by
 import java.lang.Math.min
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -77,21 +80,25 @@ object DeparturesStoryHandler : StoryHandlerBase() {
                 if (origin == null) {
                     end("De quelle gare souhaitez vous voir les départs?")
                 } else {
-                    send("Départs de la gare de ${origin.name} :")
+                    send("Départs de la gare de {0} :", origin)
                     val departures = SncfOpenDataClient.departures(origin, ZonedDateTime.now(ZoneId.of("Europe/Paris")).toLocalDateTime())
                     if (departures.isEmpty()) {
                         end("Oups, aucun départ trouvé actuellement, désolé :(")
                     }
                     //messengers list does not support only 1 element
                     else if (departures.size == 1) {
-                        withMessengerGeneric(departures.first().run { messengerGenericElement("Direction ${displayInformations.direction}", "Départ ${stopDateTime.departureDateTime.format(DeparturesStoryHandler.timeFormatter)}") })
+                        withMessengerGeneric(departures.first().run {
+                            messengerGenericElement(title(), description())
+                        })
                         end()
                     } else {
                         withMessengerList(
                                 departures
                                         .drop(departuresOffset)
                                         .take(4)
-                                        .map { messengerListElement("Direction ${it.displayInformations.direction}", "Départ ${it.stopDateTime.departureDateTime.format(DeparturesStoryHandler.timeFormatter)}") },
+                                        .map {
+                                            messengerListElement(it.title(), it.description())
+                                        },
                                 ListElementStyle.compact,
                                 messengerPostback(
                                         "Départs suivants",
@@ -103,5 +110,13 @@ object DeparturesStoryHandler : StoryHandlerBase() {
                 }
             }
         }
+    }
+
+    private fun Departure.title(): I18nLabelKey {
+        return i18n("Direction {0}", displayInformations.direction)
+    }
+
+    private fun Departure.description(): I18nLabelKey {
+        return i18n("Départ {0}", stopDateTime.departureDateTime by DeparturesStoryHandler.timeFormatter)
     }
 }

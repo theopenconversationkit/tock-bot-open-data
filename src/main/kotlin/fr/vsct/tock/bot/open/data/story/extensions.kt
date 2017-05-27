@@ -66,7 +66,6 @@ var BotBus.origin: Place?
 
 val BotBus.location: Place? get() = entities[locationEntity.role]?.value?.placeValue()?.place
 
-
 var BotBus.destination: Place?
     get() = entities[destinationEntity.role]?.value?.placeValue()?.place
     set(value) = changeEntityValue(destinationEntity, value?.let { PlaceValue(value) })

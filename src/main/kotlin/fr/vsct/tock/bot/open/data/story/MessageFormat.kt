@@ -17,25 +17,19 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data.client.sncf.model
+package fr.vsct.tock.bot.open.data.story
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  *
  */
-data class Place(
-        @JsonProperty("embedded_type")
-        val embeddedType: String,
-        val quality: Int,
-        val name: String,
-        val label: String?,
-        val id: String,
-        @JsonProperty("coord")
-        val coordinates: Coordinates?
-) {
+object MessageFormat {
 
-    override fun toString(): String {
-        return name
-    }
+    /**
+     * To format departure datetime.
+     */
+    val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd MMMM").withLocale(Locale.FRENCH)
+    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
 }
