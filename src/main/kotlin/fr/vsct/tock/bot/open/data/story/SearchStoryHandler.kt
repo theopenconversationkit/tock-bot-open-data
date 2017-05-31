@@ -113,7 +113,7 @@ object SearchStoryHandler : StoryHandlerBase() {
         return i18n(
                 "Départ à {0}, arrivée à {1}",
                 stopDateTimes!!.first().departureDateTime by timeFormat,
-                stopDateTimes.last().arrivalDateTime by dateFormat
+                stopDateTimes.last().arrivalDateTime by timeFormat
         )
     }
 }
