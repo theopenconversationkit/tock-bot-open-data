@@ -20,6 +20,7 @@
 package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.connector.messenger.addMessengerConnector
+import fr.vsct.tock.bot.importNlpDump
 import fr.vsct.tock.bot.installBots
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerBot
@@ -43,5 +44,7 @@ object Start {
         registerBot(OpenDataBotDefinition)
 
         installBots()
+
+        importNlpDump("/bot_open_data.json")
     }
 }
