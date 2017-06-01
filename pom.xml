@@ -23,7 +23,7 @@
 
     <groupId>fr.vsct.tock</groupId>
     <artifactId>tock-bot-open-data</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <name>Tock Bot Open Data</name>
     <description>A example of bot built with Tock and based on open data APIs</description>
     <url>https://github.com/voyages-sncf-technologies/tock-bot-open-data</url>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>fr.vsct.tock</groupId>
             <artifactId>bot-toolkit</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -229,7 +229,7 @@
         <developerConnection>scm:git:git@github.com:voyages-sncf-technologies/tock-bot-open-data.git
         </developerConnection>
         <url>git@github.com:voyages-sncf-technologies/tock-bot-open-data.git</url>
-        <tag>bot-open-data-0.2.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
