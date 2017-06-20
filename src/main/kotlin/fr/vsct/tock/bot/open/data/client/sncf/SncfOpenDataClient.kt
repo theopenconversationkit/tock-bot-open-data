@@ -32,10 +32,10 @@ import fr.vsct.tock.shared.create
 import fr.vsct.tock.shared.jackson.addDeserializer
 import fr.vsct.tock.shared.jackson.addSerializer
 import fr.vsct.tock.shared.jackson.mapper
-import fr.vsct.tock.shared.retrofitBuilderWithTimeout
+import fr.vsct.tock.shared.retrofitBuilderWithTimeoutAndLogger
+import mu.KotlinLogging
 import okhttp3.Credentials
 import okhttp3.Interceptor
-import okhttp3.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
@@ -46,19 +46,19 @@ import java.time.temporal.ChronoUnit.MINUTES
  */
 object SncfOpenDataClient {
 
+    private val logger = KotlinLogging.logger {}
     private val dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
 
     private val api: SncfOpenDataApi =
-            retrofitBuilderWithTimeout(
+            retrofitBuilderWithTimeoutAndLogger(
                     30000,
-                    object : Interceptor {
-                        override fun intercept(chain: Interceptor.Chain): Response {
-                            return chain.proceed(chain.request()
-                                    .newBuilder()
-                                    .header("Authorization", Credentials.basic(OpenDataConfiguration.sncfApiUser, ""))
-                                    .build())
-                        }
-                    })
+                    logger,
+                    interceptors = listOf(Interceptor { chain ->
+                        chain.proceed(chain.request()
+                                .newBuilder()
+                                .header("Authorization", Credentials.basic(OpenDataConfiguration.sncfApiUser, ""))
+                                .build())
+                    }))
                     .baseUrl("https://api.sncf.com/v1/coverage/sncf/")
                     .addJacksonConverter(mapper.copy().registerModule(SimpleModule()
                             .addDeserializer(LocalDateTime::class, LocalDateTimeDeserializer(dateFormat))
