@@ -38,6 +38,8 @@ object Start {
 
     fun start() {
         ValueResolverRepository.registerType(PlaceValue::class)
+        //det default locale to fr
+        System.setProperty("tock_default_locale", "fr")
 
         with(OpenDataConfiguration) {
             addMessengerConnector(
