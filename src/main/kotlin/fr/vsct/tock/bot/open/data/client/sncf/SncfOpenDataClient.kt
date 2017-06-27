@@ -78,7 +78,7 @@ object SncfOpenDataClient {
     }
 
     fun journey(from: Place, to: Place, datetime: LocalDateTime): List<Journey> {
-        return api.journeys(from.id, to.id, dateFormat.format(datetime)).execute().body().journeys
+        return api.journeys(from.id, to.id, dateFormat.format(datetime)).execute().body()?.journeys ?: emptyList()
     }
 
     fun departures(from: Place, datetime: LocalDateTime): List<Departure> {
