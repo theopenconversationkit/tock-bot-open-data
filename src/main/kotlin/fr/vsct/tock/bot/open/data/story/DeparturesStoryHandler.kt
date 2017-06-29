@@ -64,7 +64,7 @@ object DeparturesStoryHandler : StoryHandlerBase() {
             //check entities
             action.let { action ->
                 //handle button click
-                if (action is SendChoice) {
+                if (action is SendChoice && action.parameters[DeparturesStoryHandler.originParam] != null) {
                     origin = findPlace(action.parameters[DeparturesStoryHandler.originParam]!!)
                     departuresOffset = action.parameters[DeparturesStoryHandler.offsetParam]!!.toInt()
                 }
