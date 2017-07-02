@@ -20,7 +20,6 @@
 package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.definition.BotDefinitionBase
-import fr.vsct.tock.nlp.api.client.model.NlpEngineType
 
 /**
  *
@@ -28,8 +27,7 @@ import fr.vsct.tock.nlp.api.client.model.NlpEngineType
 object OpenDataBotDefinition : BotDefinitionBase(
         "bot_open_data",
         "vsc",
-        OpenDataStoryDefinition.values().toList(),
-        engineType = NlpEngineType.opennlp) {
+        OpenDataStoryDefinition.values().toList()) {
 
     override fun toString(): String {
         return botId
