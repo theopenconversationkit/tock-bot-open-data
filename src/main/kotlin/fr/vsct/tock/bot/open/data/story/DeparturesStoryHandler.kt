@@ -28,10 +28,11 @@ import fr.vsct.tock.bot.connector.messenger.withMessengerGeneric
 import fr.vsct.tock.bot.connector.messenger.withMessengerList
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.engine.action.SendChoice
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.more_elements
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Departure
+import fr.vsct.tock.shared.defaultZoneId
 import fr.vsct.tock.translator.I18nLabelKey
 import fr.vsct.tock.translator.by
 import java.lang.Math.min
@@ -62,26 +63,27 @@ object DeparturesStoryHandler : StoryHandlerBase() {
             var departuresOffset = 0
 
             //check entities
-            action.let { action ->
-                //handle button click
-                if (action is SendChoice && action.parameters[DeparturesStoryHandler.originParam] != null) {
-                    origin = findPlace(action.parameters[DeparturesStoryHandler.originParam]!!)
-                    departuresOffset = action.parameters[DeparturesStoryHandler.offsetParam]!!.toInt()
-                }
-                //do we have origin? If not, handle generic location intent
-                else if (origin == null && intent == SecondaryIntent.indicate_location.intent && location != null) {
-                    origin = returnsAndRemoveLocation()
-                }
-            }
+            //handle button click
+            paramChoice(originParam)
+                    ?.let {
+                        origin = findPlace(it)
+                        departuresOffset = paramChoice(offsetParam)!!.toInt()
+                    }
+                    ?:
+                    if (origin == null
+                            && intent == indicate_location.intent
+                            && location != null) {
+                        origin = returnsAndRemoveLocation()
+                    }
 
 
-            //now build the response
+            //now builds the response
             origin.let { origin ->
                 if (origin == null) {
                     end("De quelle gare souhaitez vous voir les départs?")
                 } else {
                     send("Départs de la gare de {0} :", origin)
-                    val departures = SncfOpenDataClient.departures(origin, ZonedDateTime.now(ZoneId.of("Europe/Paris")).toLocalDateTime())
+                    val departures = SncfOpenDataClient.departures(origin, ZonedDateTime.now(defaultZoneId).toLocalDateTime())
                     if (departures.isEmpty()) {
                         end("Oups, aucun départ trouvé actuellement, désolé :(")
                     }
@@ -102,9 +104,9 @@ object DeparturesStoryHandler : StoryHandlerBase() {
                                 ListElementStyle.compact,
                                 messengerPostback(
                                         "Départs suivants",
-                                        SecondaryIntent.more_elements.intent,
-                                        DeparturesStoryHandler.originParam to origin.name,
-                                        DeparturesStoryHandler.offsetParam to min(departures.size, 4).toString()))
+                                        more_elements.intent,
+                                        originParam to origin.name,
+                                        offsetParam to min(departures.size, 4).toString()))
                         end()
                     }
                 }

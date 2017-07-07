@@ -21,12 +21,12 @@ package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.connector.messenger.messengerGenericElement
 import fr.vsct.tock.bot.connector.messenger.messengerListElement
-import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle
+import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
 import fr.vsct.tock.bot.connector.messenger.withMessengerGeneric
 import fr.vsct.tock.bot.connector.messenger.withMessengerList
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Section
 import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
@@ -42,7 +42,7 @@ object SearchStoryHandler : StoryHandlerBase() {
     override fun action(bus: BotBus) {
         with(bus) {
             //handle generic location intent
-            if (intent == SecondaryIntent.indicate_location.intent && location != null) {
+            if (intent == indicate_location.intent && location != null) {
                 if (destination == null) {
                     destination = returnsAndRemoveLocation()
                 } else if (origin == null) {
@@ -90,7 +90,7 @@ object SearchStoryHandler : StoryHandlerBase() {
                                                                     section.description()
                                                             )
                                                         },
-                                                        ListElementStyle.compact
+                                                        compact
                                                 )
                                             }
                                             end()

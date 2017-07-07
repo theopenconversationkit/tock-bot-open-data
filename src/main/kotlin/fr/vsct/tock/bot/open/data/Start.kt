@@ -21,7 +21,6 @@ package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.connector.messenger.addMessengerConnector
 import fr.vsct.tock.bot.importNlpDump
-import fr.vsct.tock.bot.installBots
 import fr.vsct.tock.bot.installBotsAndAdminConnectors
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerBot
@@ -38,8 +37,9 @@ object Start {
 
     fun start() {
         ValueResolverRepository.registerType(PlaceValue::class)
-        //det default locale to fr
+        //det default locale and default zone id
         System.setProperty("tock_default_locale", "fr")
+        System.setProperty("tock_default_zone", "Europe/Paris")
 
         with(OpenDataConfiguration) {
             addMessengerConnector(

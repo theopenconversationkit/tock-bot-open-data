@@ -28,7 +28,6 @@ import fr.vsct.tock.nlp.api.client.model.Entity
 import fr.vsct.tock.nlp.api.client.model.EntityType
 import fr.vsct.tock.nlp.entity.date.DateEntityRange
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 private val originEntity = Entity(EntityType("vsc:location"), "origin")
 private val destinationEntity = Entity(EntityType("vsc:location"), "destination")
@@ -58,8 +57,6 @@ fun findPlace(name: String): Place? {
     return findPlaceValue(name)?.place
 }
 
-private fun Place?.toValue(): PlaceValue? = if (this == null) null else PlaceValue(this)
-
 var BotBus.origin: Place?
     get() = entities[originEntity.role]?.value?.placeValue()?.place
     set(value) = changeEntityValue(originEntity, value?.let { PlaceValue(value) })
@@ -72,7 +69,7 @@ var BotBus.destination: Place?
 
 
 val BotBus.departureDate: LocalDateTime?
-    get() = entityValue<DateEntityRange>(departureDateEntity.role)?.start()?.withZoneSameInstant(ZoneId.of("Europe/Paris"))?.toLocalDateTime()
+    get() = entityValue<DateEntityRange>(departureDateEntity.role)?.start()?.toLocalDateTime()
 
 fun BotBus.returnsAndRemoveLocation(): Place? {
     return location.apply {
