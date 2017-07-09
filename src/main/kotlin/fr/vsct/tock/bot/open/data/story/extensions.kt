@@ -36,7 +36,7 @@ private val departureDateEntity = Entity(EntityType("duckling:datetime"), "depar
 
 private fun ContextValue?.placeValue(): PlaceValue? {
     return if (this == null) null
-    else if (evaluated) {
+    else if (evaluated && value is PlaceValue) {
         value as PlaceValue
     } else {
         content?.let {
