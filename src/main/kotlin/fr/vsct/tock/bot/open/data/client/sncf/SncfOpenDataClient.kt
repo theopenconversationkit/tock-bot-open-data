@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration
-import fr.vsct.tock.bot.open.data.client.sncf.model.Departure
+import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.shared.addJacksonConverter
@@ -81,9 +81,15 @@ object SncfOpenDataClient {
         return api.journeys(from.id, to.id, dateFormat.format(datetime)).execute().body()?.journeys ?: emptyList()
     }
 
-    fun departures(from: Place, datetime: LocalDateTime): List<Departure> {
+    fun departures(from: Place, datetime: LocalDateTime): List<StationStop> {
         return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "departures") {
             api.departures(from.id, dateFormat.format(datetime)).execute().body()
         }?.departures ?: emptyList()
+    }
+
+    fun arrivals(from: Place, datetime: LocalDateTime): List<StationStop> {
+        return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "arrivals") {
+            api.arrivals(from.id, dateFormat.format(datetime)).execute().body()
+        }?.arrivals ?: emptyList()
     }
 }

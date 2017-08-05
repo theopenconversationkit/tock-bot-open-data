@@ -22,10 +22,13 @@ package fr.vsct.tock.bot.open.data
 import fr.vsct.tock.bot.definition.Intent
 import fr.vsct.tock.bot.definition.StoryDefinition
 import fr.vsct.tock.bot.definition.StoryHandler
+import fr.vsct.tock.bot.definition.StoryStep
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.arrivals
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_origin
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.more_elements
-import fr.vsct.tock.bot.open.data.story.DeparturesStoryHandler
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps
 import fr.vsct.tock.bot.open.data.story.GreetingsStoryHandler
 import fr.vsct.tock.bot.open.data.story.SearchStoryHandler
 
@@ -35,16 +38,27 @@ import fr.vsct.tock.bot.open.data.story.SearchStoryHandler
 enum class OpenDataStoryDefinition(
         override val storyHandler: StoryHandler,
         otherStarterIntents: Set<SecondaryIntent> = emptySet(),
-        otherIntents: Set<SecondaryIntent> = emptySet()) : StoryDefinition {
+        otherIntents: Set<SecondaryIntent> = emptySet(),
+        steps: Set<StoryStep> = emptySet()) : StoryDefinition {
 
     greetings(GreetingsStoryHandler),
-    departures(DeparturesStoryHandler, setOf(indicate_location), setOf(indicate_origin, more_elements)),
-    search(SearchStoryHandler, setOf(indicate_origin), setOf(indicate_location));
+    departures(DeparturesArrivalsStoryHandler,
+            setOf(indicate_location, arrivals),
+            setOf(indicate_origin, more_elements),
+            DeparturesArrivalsSteps.values().toSet()
+    ),
+    search(SearchStoryHandler,
+            setOf(indicate_origin),
+            setOf(indicate_location));
 
     /**
-     * Not so clear intents!
+     * Shared intents
      */
     enum class SecondaryIntent {
+        /**
+         * arrivals
+         */
+        arrivals,
         /**
          * Simple location.
          */
@@ -65,5 +79,5 @@ enum class OpenDataStoryDefinition(
     override val id: String get() = name
     override val starterIntents: Set<Intent> = setOf(Intent(name)) + otherStarterIntents.map { it.intent }
     override val intents: Set<Intent> = starterIntents + otherIntents.map { it.intent }
-
+    override val steps: Set<StoryStep> = steps
 }

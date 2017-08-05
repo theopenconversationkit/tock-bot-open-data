@@ -19,8 +19,14 @@
 
 package fr.vsct.tock.bot.open.data.client.sncf.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  *
  */
-data class DeparturesResponse(val departures:List<StationStop>) {
+data class StationStop(
+        @JsonProperty("display_informations")
+        val displayInformations: DisplayInformations,
+        @JsonProperty("stop_date_time")
+        val stopDateTime: StopDateTime) {
 }

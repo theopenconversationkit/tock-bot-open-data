@@ -40,8 +40,8 @@ object GreetingsStoryHandler : StoryHandlerBase() {
             send("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock", breath)
             withMessengerButtons(
                     "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
-                    messengerPostback("Itinéraire", search),
-                    messengerPostback("Départs", departures))
+                    messengerPostback("Itinéraires", search),
+                    messengerPostback("Départs/Arrivées", departures))
             end(breath)
         }
     }

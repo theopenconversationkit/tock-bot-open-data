@@ -19,6 +19,7 @@
 
 package fr.vsct.tock.bot.open.data.client.sncf
 
+import fr.vsct.tock.bot.open.data.client.sncf.model.ArrivalsResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.DeparturesResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.JourneysResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlacesResponse
@@ -36,7 +37,10 @@ interface SncfOpenDataApi {
     fun journeys(@Query("from") from: String, @Query("to") to: String, @Query("datetime") datetime: String): Call<JourneysResponse>
 
     @GET("stop_areas/{stopId}/departures")
-    fun departures(@Path("stopId") stopId: String, @Query("datetime") datetime: String): Call<DeparturesResponse>
+    fun departures(@Path("stopId") stopId: String, @Query("from_datetime") datetime: String): Call<DeparturesResponse>
+
+    @GET("stop_areas/{stopId}/arrivals")
+    fun arrivals(@Path("stopId") stopId: String, @Query("from_datetime") datetime: String): Call<ArrivalsResponse>
 
 }
 
