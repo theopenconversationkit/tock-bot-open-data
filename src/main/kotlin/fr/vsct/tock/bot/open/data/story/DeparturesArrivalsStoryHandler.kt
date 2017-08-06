@@ -111,11 +111,13 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                             if (arrival) SncfOpenDataClient.arrivals(origin, startDate)
                             else SncfOpenDataClient.departures(origin, startDate)
                     val nextIndex = Math.min(stops.size, 4)
-                    var nextDate = stops[nextIndex].stopDateTime.run {
-                        if (arrival) arrivalDateTime else departureDateTime
-                    }
+                    var nextDate =
+                            if (stops.isEmpty()) startDate
+                            else stops[nextIndex].stopDateTime.run {
+                                if (arrival) arrivalDateTime else departureDateTime
+                            }
                     //need to skip 4 here
-                    if (skip4First) {
+                    if (skip4First && stops.isNotEmpty()) {
                         stops = stops.subList(nextIndex, stops.size)
                         if (stops.isNotEmpty()) {
                             changeContextValue(currentDate, nextDate)
