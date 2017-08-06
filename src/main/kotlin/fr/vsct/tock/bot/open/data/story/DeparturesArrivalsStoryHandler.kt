@@ -39,6 +39,7 @@ import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Departure
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps.departures
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.currentDate
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.nextResultDate
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.nextResultOrigin
 import fr.vsct.tock.shared.defaultZoneId
 import fr.vsct.tock.translator.I18nLabelKey
 import fr.vsct.tock.translator.by
@@ -60,7 +61,7 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
     }
 
     private enum class Params : ParameterKey {
-        nextResultDate, currentDate
+        nextResultDate, currentDate, nextResultOrigin
     }
 
     /**
@@ -73,10 +74,20 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
         with(bus) {
             var startDate = contextValue(currentDate) ?: ZonedDateTime.now(defaultZoneId).toLocalDateTime()
 
+            //check location entity
+            if (location != null) {
+                origin = returnsAndRemoveLocation()
+            }
+
             //handle more_elements intent
             //if more_elements comes from a choice, we know the next date as it is passed as parameter
             //else we will skip the 4 first elements of the api request
             val skip4First = if (intent == more_elements.intent) {
+
+                paramChoice(nextResultOrigin)
+                        ?.run {
+                            origin = findPlace(this)
+                        }
                 paramChoice(nextResultDate)
                         ?.run {
                             startDate = LocalDateTime.parse(this)
@@ -85,11 +96,6 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                         } ?: true
             } else {
                 false
-            }
-
-            //check location entity
-            if (location != null) {
-                origin = returnsAndRemoveLocation()
             }
 
             //manage step change
@@ -155,7 +161,8 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                                                     messengerPostback(
                                                             if (arrival) "Arrivées suivantes" else "Départs suivants",
                                                             more_elements.intent,
-                                                            parameters = nextResultDate[nextDate]
+                                                            parameters =
+                                                            nextResultDate[nextDate] + nextResultOrigin[origin.name]
                                                     )
                                             )
                                         }
