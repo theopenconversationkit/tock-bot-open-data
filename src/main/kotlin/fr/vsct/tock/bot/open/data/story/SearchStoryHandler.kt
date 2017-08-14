@@ -42,7 +42,7 @@ object SearchStoryHandler : StoryHandlerBase() {
     override fun action(bus: BotBus) {
         with(bus) {
             //handle generic location intent
-            if (intent == indicate_location.intent && location != null) {
+            if (isIntent(indicate_location) && location != null) {
                 if (destination == null) {
                     destination = returnsAndRemoveLocation()
                 } else if (origin == null) {

@@ -20,6 +20,7 @@
 package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.definition.Intent
+import fr.vsct.tock.bot.definition.IntentAware
 import fr.vsct.tock.bot.definition.StoryDefinition
 import fr.vsct.tock.bot.definition.StoryHandler
 import fr.vsct.tock.bot.definition.StoryStep
@@ -54,7 +55,7 @@ enum class OpenDataStoryDefinition(
     /**
      * Shared intents
      */
-    enum class SecondaryIntent {
+    enum class SecondaryIntent : IntentAware {
         /**
          * arrivals
          */
@@ -74,6 +75,7 @@ enum class OpenDataStoryDefinition(
 
         val intent = Intent(name)
 
+        override fun wrappedIntent(): Intent = intent
     }
 
     override val id: String get() = name

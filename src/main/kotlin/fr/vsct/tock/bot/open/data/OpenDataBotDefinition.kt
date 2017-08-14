@@ -32,4 +32,10 @@ object OpenDataBotDefinition : BotDefinitionBase(
     override fun toString(): String {
         return botId
     }
+
+    val originEntity = entity("location", "origin")
+    val destinationEntity = entity("location", "destination")
+    val locationEntity = entity("location")
+    val departureDateEntity = entity("duckling:datetime", "departure_date")
+
 }

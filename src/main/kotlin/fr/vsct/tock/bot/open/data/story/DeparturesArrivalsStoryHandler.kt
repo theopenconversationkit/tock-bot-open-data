@@ -30,50 +30,47 @@ import fr.vsct.tock.bot.definition.ParameterKey
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.definition.StoryStep
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.arrivals
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.more_elements
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.departures
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps.arrivals
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps.departures
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.currentDate
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.nextResultDate
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.Params.nextResultOrigin
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ChoiceParameter.nextResultDate
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ChoiceParameter.nextResultOrigin
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ContextKey.startDate
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps.arrivalsStep
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps.departuresStep
+import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
 import fr.vsct.tock.shared.defaultZoneId
 import fr.vsct.tock.translator.I18nLabelKey
 import fr.vsct.tock.translator.by
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /**
  *
  */
 object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
 
-    /**
-     * Steps for departures arrivals
-     */
     enum class DeparturesArrivalsSteps : StoryStep {
-        departures, arrivals
+        departuresStep, arrivalsStep
     }
 
-    private enum class Params : ParameterKey {
-        nextResultDate, currentDate, nextResultOrigin
+    private enum class ChoiceParameter : ParameterKey {
+        nextResultDate, nextResultOrigin
     }
 
-    /**
-     * To format departure time.
-     */
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
+    private enum class ContextKey : ParameterKey {
+        startDate
+    }
+
+    var BotBus.currentDate: LocalDateTime
+        get() = contextValue(startDate) ?: ZonedDateTime.now(defaultZoneId).toLocalDateTime()
+        set(value) = changeContextValue(startDate, value)
 
     override fun action(bus: BotBus) {
 
         with(bus) {
-            var startDate = contextValue(currentDate) ?: ZonedDateTime.now(defaultZoneId).toLocalDateTime()
-
             //check location entity
             if (location != null) {
                 origin = returnsAndRemoveLocation()
@@ -82,16 +79,15 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
             //handle more_elements intent
             //if more_elements comes from a choice, we know the next date as it is passed as parameter
             //else we will skip the 4 first elements of the api request
-            val skip4First = if (intent == more_elements.intent) {
+            val skip4First = if (isIntent(more_elements)) {
 
-                paramChoice(nextResultOrigin)
+                choice(nextResultOrigin)
                         ?.run {
                             origin = findPlace(this)
                         }
-                paramChoice(nextResultDate)
+                choice(nextResultDate)
                         ?.run {
-                            startDate = LocalDateTime.parse(this)
-                            changeContextValue(currentDate, startDate)
+                            currentDate = LocalDateTime.parse(this)
                             false
                         } ?: true
             } else {
@@ -99,13 +95,13 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
             }
 
             //manage step change
-            if (intent == SecondaryIntent.arrivals.intent) {
-                step = arrivals
-            } else if (intent == OpenDataStoryDefinition.departures.mainIntent()) {
-                step = departures
+            if (isIntent(arrivals)) {
+                step = arrivalsStep
+            } else if (isIntent(departures)) {
+                step = departuresStep
             }
 
-            val arrival = step == arrivals
+            val arrival = step == arrivalsStep
 
             //now builds the response
             origin.also { origin ->
@@ -114,11 +110,11 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                 } else {
                     send("${if (arrival) "Arrivées à" else "Départs de"} la gare de {0} :", origin)
                     var stops =
-                            if (arrival) SncfOpenDataClient.arrivals(origin, startDate)
-                            else SncfOpenDataClient.departures(origin, startDate)
+                            if (arrival) SncfOpenDataClient.arrivals(origin, currentDate)
+                            else SncfOpenDataClient.departures(origin, currentDate)
                     val nextIndex = Math.min(stops.size, 4)
                     var nextDate =
-                            if (stops.isEmpty()) startDate
+                            if (stops.isEmpty()) currentDate
                             else stops[nextIndex].stopDateTime.run {
                                 if (arrival) arrivalDateTime else departureDateTime
                             }
@@ -126,7 +122,7 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                     if (skip4First && stops.isNotEmpty()) {
                         stops = stops.subList(nextIndex, stops.size)
                         if (stops.isNotEmpty()) {
-                            changeContextValue(currentDate, nextDate)
+                            currentDate = nextDate
                             nextDate = stops[Math.min(stops.size, 4)].stopDateTime.run {
                                 if (arrival) arrivalDateTime else departureDateTime
                             }
@@ -138,8 +134,8 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                     } else {
                         stops
                                 .filter {
-                                    if (arrival) it.stopDateTime.arrivalDateTime >= startDate
-                                    else it.stopDateTime.departureDateTime >= startDate
+                                    if (arrival) it.stopDateTime.arrivalDateTime >= currentDate
+                                    else it.stopDateTime.departureDateTime >= currentDate
                                 }
                                 .apply {
                                     if (isEmpty()) {
@@ -160,7 +156,7 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                                                     ListElementStyle.compact,
                                                     messengerPostback(
                                                             if (arrival) "Arrivées suivantes" else "Départs suivants",
-                                                            more_elements.intent,
+                                                            more_elements,
                                                             parameters =
                                                             nextResultDate[nextDate] + nextResultOrigin[origin.name]
                                                     )
@@ -181,6 +177,6 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
 
     private fun StationStop.description(arrivals: Boolean): I18nLabelKey {
         return i18n("${if (arrivals) "Arrivée" else "Départ"} {0}",
-                (if (arrivals) stopDateTime.arrivalDateTime else stopDateTime.departureDateTime) by DeparturesArrivalsStoryHandler.timeFormatter)
+                (if (arrivals) stopDateTime.arrivalDateTime else stopDateTime.departureDateTime) by timeFormat)
     }
 }
