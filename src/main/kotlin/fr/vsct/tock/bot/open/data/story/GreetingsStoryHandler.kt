@@ -19,8 +19,9 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.connector.messenger.messengerPostback
-import fr.vsct.tock.bot.connector.messenger.withMessengerButtons
+import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
+import fr.vsct.tock.bot.connector.messenger.postbackButton
+import fr.vsct.tock.bot.connector.messenger.withMessenger
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.departures
@@ -38,10 +39,13 @@ object GreetingsStoryHandler : StoryHandlerBase() {
 
             send("Bienvenue chez le Bot Open Data Sncf! :)")
             send("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock", breath)
-            withMessengerButtons(
-                    "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
-                    messengerPostback("Itinéraires", search),
-                    messengerPostback("Départs/Arrivées", departures))
+            withMessenger {
+                buttonsTemplate(
+                        "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
+                        postbackButton("Itinéraires", search),
+                        postbackButton("Départs/Arrivées", departures))
+            }
+
             end(breath)
         }
     }

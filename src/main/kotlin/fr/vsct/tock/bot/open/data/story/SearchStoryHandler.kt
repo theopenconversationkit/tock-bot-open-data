@@ -19,11 +19,10 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.connector.messenger.messengerGenericElement
-import fr.vsct.tock.bot.connector.messenger.messengerListElement
+import fr.vsct.tock.bot.connector.messenger.flexibleListTemplate
+import fr.vsct.tock.bot.connector.messenger.listElement
 import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
-import fr.vsct.tock.bot.connector.messenger.withMessengerGeneric
-import fr.vsct.tock.bot.connector.messenger.withMessengerList
+import fr.vsct.tock.bot.connector.messenger.withMessenger
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
@@ -72,20 +71,10 @@ object SearchStoryHandler : StoryHandlerBase() {
                                         end("Désolé, aucun itinéraire trouvé :(")
                                     } else {
                                         journeys.first().publicTransportSections().let { sections ->
-
-                                            if (sections.size == 1) {
-                                                sections.first().let { section ->
-                                                    withMessengerGeneric(
-                                                            messengerGenericElement(
-                                                                    section.title(),
-                                                                    section.description()
-                                                            )
-                                                    )
-                                                }
-                                            } else {
-                                                withMessengerList(
+                                            withMessenger {
+                                                flexibleListTemplate(
                                                         sections.map { section ->
-                                                            messengerListElement(
+                                                            listElement(
                                                                     section.title(),
                                                                     section.description()
                                                             )

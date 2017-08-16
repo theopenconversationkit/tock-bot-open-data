@@ -20,12 +20,12 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.connector.messenger.messengerGenericElement
-import fr.vsct.tock.bot.connector.messenger.messengerListElement
-import fr.vsct.tock.bot.connector.messenger.messengerPostback
+
+import fr.vsct.tock.bot.connector.messenger.flexibleListTemplate
+import fr.vsct.tock.bot.connector.messenger.listElement
 import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle
-import fr.vsct.tock.bot.connector.messenger.withMessengerGeneric
-import fr.vsct.tock.bot.connector.messenger.withMessengerList
+import fr.vsct.tock.bot.connector.messenger.quickReply
+import fr.vsct.tock.bot.connector.messenger.withMessenger
 import fr.vsct.tock.bot.definition.ParameterKey
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.definition.StoryStep
@@ -137,30 +137,25 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                                     if (arrival) it.stopDateTime.arrivalDateTime >= currentDate
                                     else it.stopDateTime.departureDateTime >= currentDate
                                 }
-                                .apply {
-                                    if (isEmpty()) {
+                                .also { filteredStops ->
+                                    if (filteredStops.isEmpty()) {
                                         end("Oups, plus de résultats, désolé :(")
-                                    }
-                                    //messengers list does not support only 1 element
-                                    else if (size == 1) {
-                                        withMessengerGeneric(first().run {
-                                            messengerGenericElement(title(arrival), description(arrival))
-                                        })
-                                        end()
                                     } else {
-                                        take(4).also { trains ->
-                                            withMessengerList(
-                                                    trains.map {
-                                                        messengerListElement(it.title(arrival), it.description(arrival))
-                                                    },
-                                                    ListElementStyle.compact,
-                                                    messengerPostback(
-                                                            if (arrival) "Arrivées suivantes" else "Départs suivants",
-                                                            more_elements,
-                                                            parameters =
-                                                            nextResultDate[nextDate] + nextResultOrigin[origin.name]
-                                                    )
-                                            )
+                                        filteredStops.take(4).let { trains ->
+                                            withMessenger {
+                                                flexibleListTemplate(
+                                                        trains.map {
+                                                            listElement(it.title(arrival), it.description(arrival))
+                                                        },
+                                                        ListElementStyle.compact,
+                                                        quickReply(
+                                                                if (arrival) "Arrivées suivantes" else "Départs suivants",
+                                                                more_elements,
+                                                                parameters =
+                                                                nextResultDate[nextDate] + nextResultOrigin[origin.name]
+                                                        )
+                                                )
+                                            }
                                         }
                                         end()
                                     }
