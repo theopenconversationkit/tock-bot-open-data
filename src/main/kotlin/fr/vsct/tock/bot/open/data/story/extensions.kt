@@ -29,6 +29,7 @@ import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.nlp.entity.date.DateEntityRange
+import fr.vsct.tock.shared.defaultZoneId
 import java.time.LocalDateTime
 
 /**
@@ -46,7 +47,7 @@ var BotBus.destination: Place?
 
 
 val BotBus.departureDate: LocalDateTime?
-    get() = entityValue<DateEntityRange>(departureDateEntity)?.start()?.toLocalDateTime()
+    get() = entityValue<DateEntityRange>(departureDateEntity)?.start()?.withZoneSameInstant(defaultZoneId)?.toLocalDateTime()
 
 fun BotBus.returnsAndRemoveLocation(): Place? {
     return location.apply {

@@ -37,7 +37,7 @@ object Start {
 
     fun start() {
         ValueResolverRepository.registerType(PlaceValue::class)
-        //det default locale and default zone id
+        //set default locale and default zone id
         System.setProperty("tock_default_locale", "fr")
         System.setProperty("tock_default_zone", "Europe/Paris")
 
