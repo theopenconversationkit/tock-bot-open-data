@@ -34,7 +34,7 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>1.1.50</kotlin>
-        <tock>0.5.0</tock>
+        <tock>0.5.1-SNAPSHOT</tock>
         <guava>23.0</guava>
 
         <junit>4.12</junit>
