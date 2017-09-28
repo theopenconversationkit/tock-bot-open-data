@@ -19,9 +19,9 @@
 
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.definition.Intent
 import fr.vsct.tock.bot.definition.IntentAware
-import fr.vsct.tock.bot.definition.StoryDefinition
+import fr.vsct.tock.bot.definition.IntentAwareBase
+import fr.vsct.tock.bot.definition.StoryDefinitionBase
 import fr.vsct.tock.bot.definition.StoryHandler
 import fr.vsct.tock.bot.definition.StoryStep
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.arrivals
@@ -38,16 +38,18 @@ import fr.vsct.tock.bot.open.data.story.SearchStoryHandler
  */
 enum class OpenDataStoryDefinition(
         override val storyHandler: StoryHandler,
-        otherStarterIntents: Set<SecondaryIntent> = emptySet(),
-        otherIntents: Set<SecondaryIntent> = emptySet(),
-        steps: Set<StoryStep> = emptySet()) : StoryDefinition {
+        override val otherStarterIntents: Set<IntentAware> = emptySet(),
+        override val otherIntents: Set<IntentAware> = emptySet(),
+        override val stepsArray: Array<out StoryStep> = emptyArray()) : StoryDefinitionBase {
 
     greetings(GreetingsStoryHandler),
+
     departures(DeparturesArrivalsStoryHandler,
             setOf(indicate_location, arrivals),
             setOf(indicate_origin, more_elements),
-            DeparturesArrivalsSteps.values().toSet()
+            DeparturesArrivalsSteps.values()
     ),
+    
     search(SearchStoryHandler,
             setOf(indicate_origin),
             setOf(indicate_location));
@@ -55,7 +57,7 @@ enum class OpenDataStoryDefinition(
     /**
      * Shared intents
      */
-    enum class SecondaryIntent : IntentAware {
+    enum class SecondaryIntent : IntentAwareBase {
         /**
          * arrivals
          */
@@ -72,14 +74,6 @@ enum class OpenDataStoryDefinition(
          * for departures
          */
         more_elements;
-
-        val intent = Intent(name)
-
-        override fun wrappedIntent(): Intent = intent
     }
 
-    override val id: String get() = name
-    override val starterIntents: Set<Intent> = setOf(Intent(name)) + otherStarterIntents.map { it.intent }
-    override val intents: Set<Intent> = starterIntents + otherIntents.map { it.intent }
-    override val steps: Set<StoryStep> = steps
 }
