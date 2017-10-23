@@ -21,6 +21,7 @@ package fr.vsct.tock.bot.open.data
 
 import fr.vsct.tock.bot.importNlpDump
 import fr.vsct.tock.bot.installBotsAndAdminConnectors
+import fr.vsct.tock.bot.open.data.GoogleAssistantConfiguration.registerGoogleAssistantConnector
 import fr.vsct.tock.bot.open.data.MessengerConfiguration.registerMessengerConnector
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerBot
@@ -40,6 +41,7 @@ object Start {
         setup()
 
         registerMessengerConnector()
+        registerGoogleAssistantConnector()
 
         registerBot(OpenDataBotDefinition)
 

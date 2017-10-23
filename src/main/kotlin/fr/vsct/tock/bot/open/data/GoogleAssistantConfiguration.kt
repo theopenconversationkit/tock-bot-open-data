@@ -19,24 +19,14 @@
 
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.definition.BotDefinitionBase
-import fr.vsct.tock.bot.definition.StoryDefinition
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.greetings
+import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
 
 /**
- * The bot definition.
+ *
  */
-object OpenDataBotDefinition :
-        BotDefinitionBase(
-                "bot_open_data",
-                enumValues<OpenDataStoryDefinition>()
-        ) {
+object GoogleAssistantConfiguration {
 
-    // the entities used by the bot
-    val originEntity = entity("location", "origin")
-    val destinationEntity = entity("location", "destination")
-    val locationEntity = entity("location")
-    val departureDateEntity = entity("duckling:datetime", "departure_date")
-
-    override val helloStory: StoryDefinition? = greetings
+    fun registerGoogleAssistantConnector() {
+        addGoogleAssistantConnector(OpenDataBotDefinition.botId)
+    }
 }

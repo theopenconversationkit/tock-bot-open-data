@@ -19,6 +19,9 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.connector.ga.gaMessage
+import fr.vsct.tock.bot.connector.ga.richResponse
+import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
 import fr.vsct.tock.bot.connector.messenger.withMessenger
@@ -39,11 +42,19 @@ object GreetingsStoryHandler : StoryHandlerBase() {
 
             send("Bienvenue chez le Bot Open Data Sncf! :)")
             send("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock", breath)
+
+            val label = "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) "
+            val itinerary = "Itinéraires"
+            val departuresArrivals = "Départs/Arrivées"
+
             withMessenger {
                 buttonsTemplate(
-                        "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
-                        postbackButton("Itinéraires", search),
-                        postbackButton("Départs/Arrivées", departures))
+                        label,
+                        postbackButton(itinerary, search),
+                        postbackButton(departuresArrivals, departures))
+            }
+            withGoogleAssistant {
+                gaMessage(label, itinerary, departuresArrivals)
             }
 
             end(breath)

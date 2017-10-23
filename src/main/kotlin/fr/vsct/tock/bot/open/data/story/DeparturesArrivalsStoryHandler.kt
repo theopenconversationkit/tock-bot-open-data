@@ -21,6 +21,10 @@
 package fr.vsct.tock.bot.open.data.story
 
 
+import fr.vsct.tock.bot.connector.ga.carouselItem
+import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
+import fr.vsct.tock.bot.connector.ga.gaImage
+import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.genericElement
 import fr.vsct.tock.bot.connector.messenger.genericTemplate
 import fr.vsct.tock.bot.connector.messenger.quickReply
@@ -36,6 +40,7 @@ import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.departures
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ChoiceParameter.nextResultDate
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ChoiceParameter.nextResultOrigin
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ChoiceParameter.proposal
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.ContextKey.startDate
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsStep.arrivalsStep
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsStep.departuresStep
@@ -55,7 +60,7 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
     }
 
     private enum class ChoiceParameter : ParameterKey {
-        nextResultDate, nextResultOrigin
+        nextResultDate, nextResultOrigin, proposal
     }
 
     private enum class ContextKey : ParameterKey {
@@ -122,7 +127,7 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                         stops = stops.subList(nextIndex, stops.size)
                         if (stops.isNotEmpty()) {
                             currentDate = nextDate
-                            nextDate = stops[Math.min(stops.size, maxProposals)].stopDateTime.run {
+                            nextDate = stops[Math.min(stops.size - 1, maxProposals)].stopDateTime.run {
                                 if (arrival) arrivalDateTime else departureDateTime
                             }
                         }
@@ -159,6 +164,24 @@ object DeparturesArrivalsStoryHandler : StoryHandlerBase() {
                                                                 parameters =
                                                                 nextResultDate[nextDate] + nextResultOrigin[origin.name]
                                                         )
+                                                )
+                                            }
+
+                                            withGoogleAssistant {
+                                                gaFlexibleMessageForCarousel(
+                                                        trains.mapIndexed { i, it ->
+                                                            with(it) {
+                                                                carouselItem(
+                                                                        departures,
+                                                                        if (arrival) i18n("{0} {1}", displayInformations.commercialMode, displayInformations.headsign) else i18n("Direction {0}", displayInformations.direction),
+                                                                        i18n("${if (arrival) "Arrivée" else "Départ"} {0}",
+                                                                                (if (arrival) stopDateTime.arrivalDateTime else stopDateTime.departureDateTime) by timeFormat),
+                                                                        gaImage(trainImage, "train"),
+                                                                        proposal[i]
+                                                                )
+                                                            }
+                                                        },
+                                                        listOf(if (arrival) "Arrivées suivantes" else "Départs suivants")
                                                 )
                                             }
                                         }

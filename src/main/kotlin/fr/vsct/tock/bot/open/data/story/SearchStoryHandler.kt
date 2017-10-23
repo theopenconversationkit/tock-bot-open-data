@@ -19,23 +19,34 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.connector.ga.carouselItem
+import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
+import fr.vsct.tock.bot.connector.ga.gaImage
+import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.flexibleListTemplate
 import fr.vsct.tock.bot.connector.messenger.listElement
 import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
 import fr.vsct.tock.bot.connector.messenger.withMessenger
+import fr.vsct.tock.bot.definition.ParameterKey
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.search
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
+import fr.vsct.tock.bot.open.data.story.SearchStoryHandler.SearchParameter.proposal
 import fr.vsct.tock.translator.by
 
 /**
  *
  */
 object SearchStoryHandler : StoryHandlerBase() {
+
+    private enum class SearchParameter : ParameterKey {
+        proposal
+    }
 
     override fun action(bus: BotBus) {
         with(bus) {
@@ -86,6 +97,26 @@ object SearchStoryHandler : StoryHandlerBase() {
                                     compact
                             )
                         }
+                        withGoogleAssistant {
+                            gaFlexibleMessageForCarousel(
+                                    sections.mapIndexed { i, section ->
+                                        with(section) {
+                                            carouselItem(
+                                                    search,
+                                                    i18n("{0} - {1}", from, to),
+                                                    i18n(
+                                                            "Départ à {0}, arrivée à {1}",
+                                                            stopDateTimes!!.first().departureDateTime by timeFormat,
+                                                            stopDateTimes.last().arrivalDateTime by timeFormat
+                                                    ),
+                                                    gaImage(trainImage, "train"),
+                                                    proposal[i]
+                                            )
+                                        }
+                                    }
+                            )
+                        }
+
                         end()
                     }
                 }
