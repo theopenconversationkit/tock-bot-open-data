@@ -25,12 +25,11 @@ import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
 import fr.vsct.tock.bot.connector.messenger.withMessenger
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
+import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
-import fr.vsct.tock.bot.open.data.client.sncf.model.Section
 import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
-import fr.vsct.tock.translator.I18nLabelKey
 import fr.vsct.tock.translator.by
 
 /**
@@ -42,67 +41,55 @@ object SearchStoryHandler : StoryHandlerBase() {
         with(bus) {
             //handle generic location intent
             if (isIntent(indicate_location) && location != null) {
-                if (destination == null) {
+                if (destination == null || origin != null) {
                     destination = returnsAndRemoveLocation()
-                } else if (origin == null) {
-                    origin = returnsAndRemoveLocation()
                 } else {
-                    destination = returnsAndRemoveLocation()
+                    origin = returnsAndRemoveLocation()
                 }
             }
 
+            val d = destination
+            val o = origin
+            val date = departureDate
+
             //build the response
-            destination.let { destination ->
-                if (destination == null) {
-                    end("Pour quelle destination?")
+            if (d == null) {
+                end("Pour quelle destination?")
+            } else if (o == null) {
+                end("Pour quelle origine?")
+            } else if (date == null) {
+                end("Quand souhaitez-vous partir?")
+            } else {
+                send("De {0} à {1}", o, d)
+                send("Départ le {0} vers {1}", date by dateFormat, date by timeFormat)
+                val journeys = SncfOpenDataClient.journey(o, d, date)
+                if (journeys.isEmpty()) {
+                    end("Désolé, aucun itinéraire trouvé :(")
                 } else {
-                    origin.let { origin ->
-                        if (origin == null) {
-                            end("Pour quelle origine?")
-                        } else {
-                            departureDate.let { departureDate ->
-                                if (departureDate == null) {
-                                    end("Quand souhaitez-vous partir?")
-                                } else {
-                                    send("De {0} à {1}", origin, destination)
-                                    send("Départ le {0} vers {1}", breath, departureDate by dateFormat, departureDate by timeFormat)
-                                    val journeys = SncfOpenDataClient.journey(origin, destination, departureDate)
-                                    if (journeys.isEmpty()) {
-                                        end("Désolé, aucun itinéraire trouvé :(")
-                                    } else {
-                                        journeys.first().publicTransportSections().let { sections ->
-                                            withMessenger {
-                                                flexibleListTemplate(
-                                                        sections.map { section ->
-                                                            listElement(
-                                                                    section.title(),
-                                                                    section.description()
-                                                            )
-                                                        },
-                                                        compact
-                                                )
-                                            }
-                                            end()
+                    send("Voici la première proposition :")
+                    journeys.first().publicTransportSections().let { sections ->
+                        withMessenger {
+                            flexibleListTemplate(
+                                    sections.map { section ->
+                                        with(section) {
+                                            listElement(
+                                                    i18n("{0} - {1}", from, to),
+                                                    i18n(
+                                                            "Départ à {0}, arrivée à {1}",
+                                                            stopDateTimes!!.first().departureDateTime by timeFormat,
+                                                            stopDateTimes.last().arrivalDateTime by timeFormat
+                                                    ),
+                                                    trainImage
+                                            )
                                         }
-                                    }
-                                }
-                            }
+                                    },
+                                    compact
+                            )
                         }
+                        end()
                     }
                 }
             }
         }
-    }
-
-    private fun Section.title(): I18nLabelKey {
-        return i18n("{0} - {1}", from, to)
-    }
-
-    private fun Section.description(): I18nLabelKey {
-        return i18n(
-                "Départ à {0}, arrivée à {1}",
-                stopDateTimes!!.first().departureDateTime by timeFormat,
-                stopDateTimes.last().arrivalDateTime by timeFormat
-        )
     }
 }

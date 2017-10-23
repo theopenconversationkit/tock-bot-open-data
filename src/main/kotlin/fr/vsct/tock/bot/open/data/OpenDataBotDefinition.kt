@@ -22,17 +22,15 @@ package fr.vsct.tock.bot.open.data
 import fr.vsct.tock.bot.definition.BotDefinitionBase
 
 /**
- *
+ * The bot definition.
  */
-object OpenDataBotDefinition : BotDefinitionBase(
-        "bot_open_data",
-        "vsc",
-        OpenDataStoryDefinition.values().toList()) {
+object OpenDataBotDefinition :
+        BotDefinitionBase(
+                "bot_open_data",
+                enumValues<OpenDataStoryDefinition>()
+        ) {
 
-    override fun toString(): String {
-        return botId
-    }
-
+    // the entities used by the bot
     val originEntity = entity("location", "origin")
     val destinationEntity = entity("location", "destination")
     val locationEntity = entity("location")

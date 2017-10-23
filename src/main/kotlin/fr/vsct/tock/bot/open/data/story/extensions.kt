@@ -28,6 +28,7 @@ import fr.vsct.tock.bot.open.data.OpenDataBotDefinition.originEntity
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
+import fr.vsct.tock.nlp.api.client.model.Entity
 import fr.vsct.tock.nlp.entity.date.DateEntityRange
 import fr.vsct.tock.shared.defaultZoneId
 import java.time.LocalDateTime
@@ -36,14 +37,14 @@ import java.time.LocalDateTime
  * entity values
  */
 var BotBus.origin: Place?
-    get() = entityContextValue(originEntity).placeValue()?.place
-    set(value) = changeEntityValue(originEntity, value?.let { PlaceValue(value) })
+    get() = place(originEntity)
+    set(value) = setPlace(originEntity, value)
 
-val BotBus.location: Place? get() = entities[locationEntity.role]?.value?.placeValue()?.place
+val BotBus.location: Place? get() = place(locationEntity)
 
 var BotBus.destination: Place?
-    get() = entityContextValue(destinationEntity)?.placeValue()?.place
-    set(value) = changeEntityValue(destinationEntity, value?.let { PlaceValue(value) })
+    get() = place(destinationEntity)
+    set(value) = setPlace(destinationEntity, value)
 
 
 val BotBus.departureDate: LocalDateTime?
@@ -54,6 +55,14 @@ fun BotBus.returnsAndRemoveLocation(): Place? {
         removeEntityValue(locationEntity)
     }
 }
+
+fun findPlace(name: String): Place? {
+    return findPlaceValue(name)?.place
+}
+
+private fun BotBus.place(entity: Entity): Place? = entities[entity.role]?.value?.placeValue()?.place
+
+private fun BotBus.setPlace(entity: Entity, place: Place?) = changeEntityValue(entity, place?.let { PlaceValue(place) })
 
 private fun ContextValue?.placeValue(): PlaceValue? {
     return if (this == null) null
@@ -74,8 +83,5 @@ private fun findPlaceValue(name: String): PlaceValue? {
     }
 }
 
-fun findPlace(name: String): Place? {
-    return findPlaceValue(name)?.place
-}
 
 

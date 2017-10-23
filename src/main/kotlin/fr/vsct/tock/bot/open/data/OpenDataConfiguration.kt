@@ -32,23 +32,7 @@ object OpenDataConfiguration {
     val sncfApiUser = property("tock_bot_open_data_sncf_api_user", "Please specify sncf open data api user")
 
     /**
-     * The facebook page id.
+     * Wikipedia image :)
      */
-    val pageId: String = property("tock_bot_open_data_page_id", "Please specify facebook page id")
-
-    /**
-     * The messenger page token.
-     */
-    val pageToken: String = property("tock_bot_open_data_page_token", "Please specify facebook page token")
-
-    /**
-     * The messenger application secret key.
-     */
-    val applicationSecret: String = property("tock_bot_open_data_application_secret", "Please specify messenger application secret")
-
-    /**
-     * The webhook verify token.
-     */
-    val webhookVerifyToken: String = property("tock_bot_open_data_webhook_verify_token", "Please specify messenger webhook verify token")
-
+    val trainImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Logo_gyermekvasut.svg/240px-Logo_gyermekvasut.svg.png"
 }

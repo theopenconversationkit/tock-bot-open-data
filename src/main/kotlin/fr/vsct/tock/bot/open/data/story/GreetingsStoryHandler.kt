@@ -35,7 +35,7 @@ object GreetingsStoryHandler : StoryHandlerBase() {
     override fun action(bus: BotBus) {
         with(bus) {
             //cleanup state
-            removeAllEntityValues()
+            resetDialogState()
 
             send("Bienvenue chez le Bot Open Data Sncf! :)")
             send("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock", breath)

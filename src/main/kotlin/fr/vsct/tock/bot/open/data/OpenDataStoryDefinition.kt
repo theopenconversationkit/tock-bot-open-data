@@ -24,12 +24,12 @@ import fr.vsct.tock.bot.definition.IntentAwareBase
 import fr.vsct.tock.bot.definition.StoryDefinitionBase
 import fr.vsct.tock.bot.definition.StoryHandler
 import fr.vsct.tock.bot.definition.StoryStep
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.arrivals
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_location
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.indicate_origin
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SecondaryIntent.more_elements
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.arrivals
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_origin
+import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.more_elements
 import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsSteps
+import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsStep
 import fr.vsct.tock.bot.open.data.story.GreetingsStoryHandler
 import fr.vsct.tock.bot.open.data.story.SearchStoryHandler
 
@@ -42,24 +42,26 @@ enum class OpenDataStoryDefinition(
         override val otherIntents: Set<IntentAware> = emptySet(),
         override val stepsArray: Array<out StoryStep> = emptyArray()) : StoryDefinitionBase {
 
+    // the stories (with their main intent)
+
     greetings(GreetingsStoryHandler),
 
     departures(DeparturesArrivalsStoryHandler,
             setOf(indicate_location, arrivals),
             setOf(indicate_origin, more_elements),
-            DeparturesArrivalsSteps.values()
+            enumValues<DeparturesArrivalsStep>()
     ),
-    
+
     search(SearchStoryHandler,
             setOf(indicate_origin),
             setOf(indicate_location));
 
     /**
-     * Shared intents
+     * Shared intents.
      */
-    enum class SecondaryIntent : IntentAwareBase {
+    enum class SharedIntent : IntentAwareBase {
         /**
-         * arrivals
+         * would like to see the arrivals, not the departures.
          */
         arrivals,
         /**
@@ -71,7 +73,7 @@ enum class OpenDataStoryDefinition(
          */
         indicate_origin,
         /**
-         * for departures
+         * next element intents.
          */
         more_elements;
     }

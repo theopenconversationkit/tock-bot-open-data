@@ -19,40 +19,41 @@
 
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.connector.messenger.addMessengerConnector
 import fr.vsct.tock.bot.importNlpDump
 import fr.vsct.tock.bot.installBotsAndAdminConnectors
+import fr.vsct.tock.bot.open.data.MessengerConfiguration.registerMessengerConnector
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerBot
 import fr.vsct.tock.nlp.entity.ValueResolverRepository
+import fr.vsct.tock.translator.Translator
 
 fun main(args: Array<String>) {
     Start.start()
 }
 
 /**
- *
+ * This is the entry point of the bot.
  */
 object Start {
 
     fun start() {
-        ValueResolverRepository.registerType(PlaceValue::class)
-        //set default locale and default zone id
-        System.setProperty("tock_default_locale", "fr")
-        System.setProperty("tock_default_zone", "Europe/Paris")
+        setup()
 
-        with(OpenDataConfiguration) {
-            addMessengerConnector(
-                    pageId,
-                    pageToken,
-                    applicationSecret,
-                    webhookVerifyToken,
-                    name = "bot-open-data")
-        }
+        registerMessengerConnector()
+
         registerBot(OpenDataBotDefinition)
 
         installBotsAndAdminConnectors()
 
         importNlpDump("/bot_open_data.json")
+    }
+
+    private fun setup() {
+        Translator.enabled = true
+        //we add a new value type in order to manage open data api place
+        ValueResolverRepository.registerType(PlaceValue::class)
+        //set default locale and default zone id
+        System.setProperty("tock_default_locale", "fr")
+        System.setProperty("tock_default_zone", "Europe/Paris")
     }
 }
