@@ -19,36 +19,39 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.connector.ConnectorType
 import fr.vsct.tock.bot.connector.ga.carouselItem
+import fr.vsct.tock.bot.connector.ga.gaConnectorType
 import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
 import fr.vsct.tock.bot.connector.ga.gaImage
-import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.flexibleListTemplate
 import fr.vsct.tock.bot.connector.messenger.listElement
+import fr.vsct.tock.bot.connector.messenger.messengerConnectorType
 import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
-import fr.vsct.tock.bot.connector.messenger.withMessenger
+import fr.vsct.tock.bot.definition.ConnectorStoryHandlerBase
 import fr.vsct.tock.bot.definition.ParameterKey
 import fr.vsct.tock.bot.definition.StoryHandlerBase
+import fr.vsct.tock.bot.definition.StoryHandlerDefinitionBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.search
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
+import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
+import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.client.sncf.model.Section
 import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
-import fr.vsct.tock.bot.open.data.story.SearchStoryHandler.SearchParameter.proposal
+import fr.vsct.tock.bot.open.data.story.SearchStoryHandlerDefinition.SearchParameter.proposal
 import fr.vsct.tock.translator.by
+import java.time.LocalDateTime
 
 /**
- *
+ * The search intent handler.
  */
-object SearchStoryHandler : StoryHandlerBase() {
+object SearchStoryHandler : StoryHandlerBase<SearchStoryHandlerDefinition>() {
 
-    private enum class SearchParameter : ParameterKey {
-        proposal
-    }
-
-    override fun action(bus: BotBus) {
+    override fun computeStoryHandlerDefinition(bus: BotBus): SearchStoryHandlerDefinition? {
         with(bus) {
             //handle generic location intent
             if (isIntent(indicate_location) && location != null) {
@@ -59,68 +62,118 @@ object SearchStoryHandler : StoryHandlerBase() {
                 }
             }
 
-            val d = destination
-            val o = origin
-            val date = departureDate
-
-            //build the response
-            if (d == null) {
-                end("Pour quelle destination?")
-            } else if (o == null) {
-                end("Pour quelle origine?")
-            } else if (date == null) {
-                end("Quand souhaitez-vous partir?")
-            } else {
-                send("De {0} à {1}", o, d)
-                send("Départ le {0} vers {1}", date by dateFormat, date by timeFormat)
-                val journeys = SncfOpenDataClient.journey(o, d, date)
-                if (journeys.isEmpty()) {
-                    end("Désolé, aucun itinéraire trouvé :(")
-                } else {
-                    send("Voici la première proposition :")
-                    journeys.first().publicTransportSections().let { sections ->
-                        withMessenger {
-                            flexibleListTemplate(
-                                    sections.map { section ->
-                                        with(section) {
-                                            listElement(
-                                                    i18n("{0} - {1}", from, to),
-                                                    i18n(
-                                                            "Départ à {0}, arrivée à {1}",
-                                                            stopDateTimes!!.first().departureDateTime by timeFormat,
-                                                            stopDateTimes.last().arrivalDateTime by timeFormat
-                                                    ),
-                                                    trainImage
-                                            )
-                                        }
-                                    },
-                                    compact
-                            )
-                        }
-                        withGoogleAssistant {
-                            gaFlexibleMessageForCarousel(
-                                    sections.mapIndexed { i, section ->
-                                        with(section) {
-                                            carouselItem(
-                                                    search,
-                                                    i18n("{0} - {1}", from, to),
-                                                    i18n(
-                                                            "Départ à {0}, arrivée à {1}",
-                                                            stopDateTimes!!.first().departureDateTime by timeFormat,
-                                                            stopDateTimes.last().arrivalDateTime by timeFormat
-                                                    ),
-                                                    gaImage(trainImage, "train"),
-                                                    proposal[i]
-                                            )
-                                        }
-                                    }
-                            )
-                        }
-
-                        end()
-                    }
-                }
+            //check mandatory entities
+            when {
+                destination == null -> end("Pour quelle destination?")
+                origin == null -> end("Pour quelle origine?")
+                departureDate == null -> end("Quand souhaitez-vous partir?")
+                else -> return SearchStoryHandlerDefinition(bus)
             }
         }
+
+        return null
+    }
+
+}
+
+
+/**
+ * The search handler definition.
+ */
+class SearchStoryHandlerDefinition(bus: BotBus) : StoryHandlerDefinitionBase<SearchConnectorStoryHandler>(bus) {
+
+    enum class SearchParameter : ParameterKey {
+        proposal
+    }
+
+    override fun provideConnector(connectorType: ConnectorType): SearchConnectorStoryHandler? =
+            when (connectorType) {
+                messengerConnectorType -> MessengerSearchConnectorStoryHandler(this)
+                gaConnectorType -> GaSearchConnectorStoryHandler(this)
+                else -> null
+            }
+
+    private val d: Place = bus.destination!!
+    private val o: Place = bus.origin!!
+    private val date: LocalDateTime = bus.departureDate!!
+
+    override fun handle() {
+        send("De {0} à {1}", o, d)
+        send("Départ le {0} vers {1}", date by dateFormat, date by timeFormat)
+        val journeys = SncfOpenDataClient.journey(o, d, date)
+        if (journeys.isEmpty()) {
+            end("Désolé, aucun itinéraire trouvé :(")
+        } else {
+            send("Voici la première proposition :")
+            connector?.sendFirstJourney(journeys.first())
+            end()
+        }
+    }
+}
+
+/**
+ * Connector specific behaviour.
+ */
+sealed class SearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : ConnectorStoryHandlerBase<SearchStoryHandlerDefinition>(context) {
+
+    fun Section.title(): CharSequence = i18n("{0} - {1}", from, to)
+
+    fun Section.content(): CharSequence =
+            i18n(
+                    "Départ à {0}, arrivée à {1}",
+                    stopDateTimes.first().departureDateTime by timeFormat,
+                    stopDateTimes.last().arrivalDateTime by timeFormat
+            )
+
+
+    fun sendFirstJourney(journey: Journey) = sendFirstJourney(journey.publicTransportSections())
+
+    abstract fun sendFirstJourney(sections: List<Section>)
+}
+
+/**
+ * Messenger specific behaviour.
+ */
+class MessengerSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : SearchConnectorStoryHandler(context) {
+
+    override fun sendFirstJourney(sections: List<Section>) {
+        withMessage(
+                flexibleListTemplate(
+                        sections.map { section ->
+                            with(section) {
+                                listElement(
+                                        title(),
+                                        content(),
+                                        trainImage
+                                )
+                            }
+                        },
+                        compact
+                )
+        )
+    }
+}
+
+/**
+ * Google Assistant specific behaviour.
+ */
+class GaSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : SearchConnectorStoryHandler(context) {
+
+    override fun sendFirstJourney(sections: List<Section>) {
+        withMessage(
+                gaFlexibleMessageForCarousel(
+                        sections.mapIndexed { i, section ->
+                            kotlin.with(section) {
+                                carouselItem(
+                                        search,
+                                        title(),
+                                        content(),
+                                        gaImage(trainImage, "train"),
+                                        proposal[i]
+                                )
+                            }
+                        }
+                )
+        )
     }
 }

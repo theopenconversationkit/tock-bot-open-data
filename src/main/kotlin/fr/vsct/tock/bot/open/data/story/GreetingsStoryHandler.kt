@@ -25,6 +25,7 @@ import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
 import fr.vsct.tock.bot.connector.messenger.withMessenger
+import fr.vsct.tock.bot.definition.SimpleStoryHandlerBase
 import fr.vsct.tock.bot.definition.StoryHandlerBase
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.departures
@@ -33,7 +34,7 @@ import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.search
 /**
  *
  */
-object GreetingsStoryHandler : StoryHandlerBase() {
+object GreetingsStoryHandler : SimpleStoryHandlerBase() {
 
     override fun action(bus: BotBus) {
         with(bus) {

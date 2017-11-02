@@ -33,6 +33,6 @@ data class Journey(
         val departureDateTime: LocalDateTime) {
 
 
-    fun publicTransportSections(): List<Section> = sections.filter { it.type == "public_transport" }
+    fun publicTransportSections(): List<Section> = sections.filter { it.type == "public_transport"}
 
 }

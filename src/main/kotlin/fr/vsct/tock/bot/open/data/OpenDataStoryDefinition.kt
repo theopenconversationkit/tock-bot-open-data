@@ -24,12 +24,11 @@ import fr.vsct.tock.bot.definition.IntentAwareBase
 import fr.vsct.tock.bot.definition.StoryDefinitionBase
 import fr.vsct.tock.bot.definition.StoryHandler
 import fr.vsct.tock.bot.definition.StoryStep
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.arrivals
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_origin
 import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.more_elements
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler
-import fr.vsct.tock.bot.open.data.story.DeparturesArrivalsStoryHandler.DeparturesArrivalsStep
+import fr.vsct.tock.bot.open.data.story.ArrivalsStoryHandler
+import fr.vsct.tock.bot.open.data.story.DeparturesStoryHandler
 import fr.vsct.tock.bot.open.data.story.GreetingsStoryHandler
 import fr.vsct.tock.bot.open.data.story.SearchStoryHandler
 
@@ -46,11 +45,16 @@ enum class OpenDataStoryDefinition(
 
     greetings(GreetingsStoryHandler),
 
-    departures(DeparturesArrivalsStoryHandler,
-            setOf(indicate_location, arrivals),
-            setOf(indicate_origin, more_elements),
-            enumValues<DeparturesArrivalsStep>()
+    departures(DeparturesStoryHandler,
+            setOf(indicate_location),
+            setOf(indicate_origin, more_elements)
     ),
+
+    arrivals(ArrivalsStoryHandler,
+            setOf(indicate_location),
+            setOf(indicate_origin, more_elements)
+    ),
+
 
     search(SearchStoryHandler,
             setOf(indicate_origin),
@@ -60,10 +64,6 @@ enum class OpenDataStoryDefinition(
      * Shared intents.
      */
     enum class SharedIntent : IntentAwareBase {
-        /**
-         * would like to see the arrivals, not the departures.
-         */
-        arrivals,
         /**
          * Simple location.
          */

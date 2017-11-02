@@ -29,5 +29,5 @@ data class Section(
         val from: Place?,
         val to: Place?,
         @JsonProperty("stop_date_times")
-        val stopDateTimes: List<StopDateTime>?) {
+        val stopDateTimes: List<StopDateTime> = emptyList()) {
 }
