@@ -17,26 +17,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data
+package fr.vsct.tock.bot.open.data.client.sncf.model
 
-import fr.vsct.tock.bot.definition.BotDefinitionBase
-import fr.vsct.tock.bot.definition.StoryDefinition
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.greetings
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
- * The bot definition.
+ *
  */
-object OpenDataBotDefinition :
-        BotDefinitionBase(
-                "bot_open_data",
-                enumValues<OpenDataStoryDefinition>()
-        ) {
-
-    // the entities used by the bot
-    val originEntity = entity("location", "origin")
-    val destinationEntity = entity("location", "destination")
-    val locationEntity = entity("location")
-    val departureDateEntity = entity("duckling:datetime", "departure_date")
-
-    override val helloStory: StoryDefinition? = greetings
+data class VehicleJourney(
+        @JsonProperty("stop_times") val stopTimes: List<StopTime>
+) {
 }

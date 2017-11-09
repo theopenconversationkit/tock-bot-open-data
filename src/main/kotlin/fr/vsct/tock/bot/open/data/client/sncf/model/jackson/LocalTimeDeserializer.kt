@@ -17,16 +17,24 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data
+package fr.vsct.tock.bot.open.data.client.sncf.model.jackson
 
-import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import java.time.LocalTime
 
 /**
  *
  */
-object GoogleAssistantConfiguration {
+class LocalTimeDeserializer : JsonDeserializer<LocalTime>() {
 
-    fun registerGoogleAssistantConnector() {
-        addGoogleAssistantConnector(openBot.botId)
+    override fun deserialize(parser: JsonParser, p1: DeserializationContext): LocalTime? {
+        val s = parser.valueAsString
+        return if (s == null) {
+            null
+        } else {
+            LocalTime.of(s.substring(0, 2).toInt(), s.substring(2, 4).toInt(), s.substring(4, 6).toInt())
+        }
     }
 }

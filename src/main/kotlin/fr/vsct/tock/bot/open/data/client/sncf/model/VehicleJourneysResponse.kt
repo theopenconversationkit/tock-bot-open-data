@@ -17,16 +17,13 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data
+package fr.vsct.tock.bot.open.data.client.sncf.model
 
-import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
  *
  */
-object GoogleAssistantConfiguration {
-
-    fun registerGoogleAssistantConnector() {
-        addGoogleAssistantConnector(openBot.botId)
-    }
+data class VehicleJourneysResponse(
+        @JsonProperty("vehicle_journeys") val vehicleJourney: List<VehicleJourney>) {
 }

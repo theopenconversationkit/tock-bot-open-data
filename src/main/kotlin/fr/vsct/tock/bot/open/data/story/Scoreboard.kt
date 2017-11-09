@@ -19,31 +19,39 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.connector.ConnectorType
+import fr.vsct.tock.bot.connector.ga.GAHandler
 import fr.vsct.tock.bot.connector.ga.carouselItem
-import fr.vsct.tock.bot.connector.ga.gaConnectorType
 import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
 import fr.vsct.tock.bot.connector.ga.gaImage
+import fr.vsct.tock.bot.connector.messenger.MessengerHandler
 import fr.vsct.tock.bot.connector.messenger.genericElement
 import fr.vsct.tock.bot.connector.messenger.genericTemplate
-import fr.vsct.tock.bot.connector.messenger.messengerConnectorType
 import fr.vsct.tock.bot.connector.messenger.quickReply
-import fr.vsct.tock.bot.definition.ConnectorStoryHandlerBase
+import fr.vsct.tock.bot.definition.ConnectorDef
+import fr.vsct.tock.bot.definition.Handler
+import fr.vsct.tock.bot.definition.HandlerDef
+import fr.vsct.tock.bot.definition.IntentAware
 import fr.vsct.tock.bot.definition.ParameterKey
-import fr.vsct.tock.bot.definition.StoryHandlerBase
-import fr.vsct.tock.bot.definition.StoryHandlerDefinitionBase
+import fr.vsct.tock.bot.definition.StoryStep
 import fr.vsct.tock.bot.engine.BotBus
+import fr.vsct.tock.bot.open.data.OpenDataConfiguration.stationImage
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.more_elements
+import fr.vsct.tock.bot.open.data.SecondaryIntent
+import fr.vsct.tock.bot.open.data.SecondaryIntent.more_elements
+import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
+import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
 import fr.vsct.tock.bot.open.data.story.ChoiceParameter.nextResultDate
 import fr.vsct.tock.bot.open.data.story.ChoiceParameter.nextResultOrigin
 import fr.vsct.tock.bot.open.data.story.ChoiceParameter.proposal
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
-import fr.vsct.tock.bot.open.data.story.ScoreboardStoryHandlerDefinition.ContextKey.startDate
+import fr.vsct.tock.bot.open.data.story.ScoreboardDef.ContextKey.currentStops
+import fr.vsct.tock.bot.open.data.story.ScoreboardDef.ContextKey.startDate
+import fr.vsct.tock.nlp.entity.OrdinalValue
 import fr.vsct.tock.shared.defaultZoneId
 import fr.vsct.tock.translator.by
+import fr.vsct.tock.translator.raw
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
@@ -51,16 +59,52 @@ enum class ChoiceParameter : ParameterKey {
     nextResultDate, nextResultOrigin, proposal
 }
 
+enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
+
+    display,
+
+    select {
+
+        override val intent: IntentAware? = SecondaryIntent.select
+
+        override fun answer(handler: ScoreboardDef): Unit =
+                with(handler) {
+                    if (displayedStops.isEmpty()) {
+                        end("Aucune proposition à choisir. :(")
+                    }
+                    if (ordinal < 0 || ordinal >= displayedStops.size) {
+                        end("Je ne trouve pas cette proposition. :(")
+                    } else {
+                        val stop = displayedStops[ordinal]
+                        stop.findVehicleId()
+                                ?.let { SncfOpenDataClient.vehicleJourney(it) }
+                                ?.also {
+                                    handler.connector?.displayDetails(it)
+                                    end()
+                                }
+                                ?: end("Trajet non trouvé")
+                    }
+                }
+    },
+
+    disruption {
+        override fun answer(handler: ScoreboardDef): Unit? {
+            return handler.answer()
+        }
+    };
+
+}
+
 /**
  *
  */
-abstract class ScoreboardStoryHandler : StoryHandlerBase<ScoreboardStoryHandlerDefinition>() {
+abstract class Scoreboard : Handler<ScoreboardDef>() {
 
     abstract val missingOriginMessage: String
 
-    abstract fun newDefinition(bus: BotBus): ScoreboardStoryHandlerDefinition
+    abstract fun scoreboardDef(bus: BotBus): ScoreboardDef
 
-    override fun computeStoryHandlerDefinition(bus: BotBus): ScoreboardStoryHandlerDefinition? {
+    override fun setupHandlerDef(bus: BotBus): ScoreboardDef? {
         with(bus) {
             //check location entity
             if (location != null) {
@@ -76,7 +120,7 @@ abstract class ScoreboardStoryHandler : StoryHandlerBase<ScoreboardStoryHandlerD
             //check mandatory entities
             when (origin) {
                 null -> end(missingOriginMessage)
-                else -> return newDefinition(bus)
+                else -> return scoreboardDef(bus)
             }
 
             return null
@@ -84,15 +128,9 @@ abstract class ScoreboardStoryHandler : StoryHandlerBase<ScoreboardStoryHandlerD
     }
 }
 
-abstract class ScoreboardStoryHandlerDefinition(bus: BotBus)
-    : StoryHandlerDefinitionBase<ScoreboardConnectorStoryHandler>(bus) {
-
-    override fun provideConnector(connectorType: ConnectorType): ScoreboardConnectorStoryHandler? =
-            when (connectorType) {
-                messengerConnectorType -> MessengerScoreboardConnectorStoryHandler(this)
-                gaConnectorType -> GaScoreboardConnectorStoryHandler(this)
-                else -> null
-            }
+@GAHandler(GAScoreboardConnector::class)
+@MessengerHandler(MessengerScoreboardConnector::class)
+abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus) {
 
     companion object {
         private val maxProposals: Int = 10
@@ -101,13 +139,18 @@ abstract class ScoreboardStoryHandlerDefinition(bus: BotBus)
     val o: Place = origin!!
 
     private enum class ContextKey : ParameterKey {
-        startDate
+        startDate, currentStops
     }
 
     protected var currentDate: LocalDateTime
         get() = contextValue(startDate) ?: ZonedDateTime.now(defaultZoneId).toLocalDateTime()
         set(value) = changeContextValue(startDate, value)
 
+    var displayedStops: Array<StationStop>
+        get() = contextValue(currentStops) ?: emptyArray()
+        set(value) = changeContextValue(currentStops, value)
+
+    val ordinal: Int get() = (entityValue<OrdinalValue>("ordinal")?.value?.toInt() ?: 1) - 1
 
     abstract val headerMessage: String
     abstract val noResultMessage: String
@@ -121,7 +164,7 @@ abstract class ScoreboardStoryHandlerDefinition(bus: BotBus)
 
     abstract val itemSubtitleMessage: String
 
-    override fun handle() {
+    override fun answer() {
         //retrieve start date from postback
         choice(nextResultDate)?.apply {
             currentDate = LocalDateTime.parse(this)
@@ -150,6 +193,7 @@ abstract class ScoreboardStoryHandlerDefinition(bus: BotBus)
                 }
             }
 
+            displayedStops = stops.toTypedArray()
 
             stops
                     .filter { timeFor(it) >= currentDate }
@@ -170,19 +214,21 @@ abstract class ScoreboardStoryHandlerDefinition(bus: BotBus)
 /**
  * Connector specific behaviour.
  */
-sealed class ScoreboardConnectorStoryHandler(context: ScoreboardStoryHandlerDefinition)
-    : ConnectorStoryHandlerBase<ScoreboardStoryHandlerDefinition>(context) {
+sealed class ScoreboardConnector(context: ScoreboardDef)
+    : ConnectorDef<ScoreboardDef>(context) {
 
-    fun ScoreboardStoryHandlerDefinition.subtitle(stop: StationStop): CharSequence
+    fun ScoreboardDef.subtitle(stop: StationStop): CharSequence
             = i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
 
     abstract fun display(trains: List<StationStop>, nextDate: LocalDateTime)
+
+    abstract fun displayDetails(journey: VehicleJourney)
 }
 
 /**
  * Messenger specific behaviour.
  */
-class MessengerScoreboardConnectorStoryHandler(context: ScoreboardStoryHandlerDefinition) : ScoreboardConnectorStoryHandler(context) {
+class MessengerScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(context) {
 
     override fun display(trains: List<StationStop>, nextDate: LocalDateTime) {
         with(context) {
@@ -205,12 +251,28 @@ class MessengerScoreboardConnectorStoryHandler(context: ScoreboardStoryHandlerDe
             )
         }
     }
+
+    override fun displayDetails(journey: VehicleJourney) {
+        with(context) {
+            withMessage(
+                    genericTemplate(
+                            journey.stopTimes.take(10).map {
+                                genericElement(
+                                        (it.stopPoint?.name ?: "").raw,
+                                        it.departureTime?.format(timeFormat)?.raw,
+                                        stationImage
+                                )
+                            }
+                    )
+            )
+        }
+    }
 }
 
 /**
  * Google Assistant specific behaviour.
  */
-class GaScoreboardConnectorStoryHandler(context: ScoreboardStoryHandlerDefinition) : ScoreboardConnectorStoryHandler(context) {
+class GAScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(context) {
 
     override fun display(trains: List<StationStop>, nextDate: LocalDateTime) {
         with(context) {
@@ -228,6 +290,26 @@ class GaScoreboardConnectorStoryHandler(context: ScoreboardStoryHandlerDefinitio
                                 }
                             },
                             listOf(nextMessage)
+                    )
+            )
+        }
+    }
+
+    override fun displayDetails(journey: VehicleJourney) {
+        with(context) {
+            withMessage(
+                    gaFlexibleMessageForCarousel(
+                            journey.stopTimes.take(10).mapIndexed { i, it ->
+                                with(it) {
+                                    carouselItem(
+                                            SecondaryIntent.select,
+                                            (it.stopPoint?.name ?: "").raw,
+                                            it.departureTime?.format(timeFormat)?.raw,
+                                            gaImage(stationImage, "gare"),
+                                            proposal[i]
+                                    )
+                                }
+                            }
                     )
             )
         }

@@ -23,9 +23,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration
-import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
+import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
 import fr.vsct.tock.shared.addJacksonConverter
 import fr.vsct.tock.shared.cache.getOrCache
 import fr.vsct.tock.shared.create
@@ -74,7 +75,12 @@ object SncfOpenDataClient {
     }
 
     fun bestPlaceMatch(query: String): Place? {
-        return places(query).maxBy { it.quality }
+        val p = places(query).firstOrNull()
+        return if(p != null && p.embeddedType != "stop_area") {
+            api.placesNearby(p.id).execute().body()?.places?.firstOrNull()
+        } else {
+            p
+        }
     }
 
     fun journey(from: Place, to: Place, datetime: LocalDateTime): List<Journey> {
@@ -91,5 +97,9 @@ object SncfOpenDataClient {
         return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "arrivals") {
             api.arrivals(from.id, dateFormat.format(datetime)).execute().body()
         }?.arrivals ?: emptyList()
+    }
+
+    fun vehicleJourney(id:String) : VehicleJourney? {
+        return api.vehicleJourneys(id).execute().body()?.vehicleJourney?.firstOrNull()
     }
 }

@@ -17,16 +17,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data
-
-import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
+package fr.vsct.tock.bot.open.data.client.sncf.model
 
 /**
  *
  */
-object GoogleAssistantConfiguration {
-
-    fun registerGoogleAssistantConnector() {
-        addGoogleAssistantConnector(openBot.botId)
-    }
+data class Link(val type: String, val id: String? = null) {
 }

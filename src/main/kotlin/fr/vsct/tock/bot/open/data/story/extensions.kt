@@ -21,10 +21,10 @@ package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.engine.dialog.ContextValue
-import fr.vsct.tock.bot.open.data.OpenDataBotDefinition.departureDateEntity
-import fr.vsct.tock.bot.open.data.OpenDataBotDefinition.destinationEntity
-import fr.vsct.tock.bot.open.data.OpenDataBotDefinition.locationEntity
-import fr.vsct.tock.bot.open.data.OpenDataBotDefinition.originEntity
+import fr.vsct.tock.bot.open.data.departureDateEntity
+import fr.vsct.tock.bot.open.data.destinationEntity
+import fr.vsct.tock.bot.open.data.locationEntity
+import fr.vsct.tock.bot.open.data.originEntity
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.entity.PlaceValue

@@ -19,23 +19,28 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.definition.storyWithSteps
 import fr.vsct.tock.bot.engine.BotBus
+import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
+import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_origin
+import fr.vsct.tock.bot.open.data.SecondaryIntent.more_elements
+import fr.vsct.tock.bot.open.data.SecondaryIntent.select
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
-import fr.vsct.tock.translator.by
 import java.time.LocalDateTime
 
-/**
- *
- */
-object ArrivalsStoryHandler : ScoreboardStoryHandler() {
+val arrivals = storyWithSteps<ScoreboardSteps>(
+        Arrivals,
+        secondaryIntents = setOf(indicate_location, indicate_origin, more_elements, select)
+)
+
+object Arrivals : Scoreboard() {
 
     override val missingOriginMessage = "De quelle gare souhaitez vous voir les arrivées?"
-    override fun newDefinition(bus: BotBus): ScoreboardStoryHandlerDefinition
-        = ArrivalsStoryHandlerDefinition(bus)
+    override fun scoreboardDef(bus: BotBus): ScoreboardDef = ArrivalsDef(bus)
 }
 
-class ArrivalsStoryHandlerDefinition(bus: BotBus) : ScoreboardStoryHandlerDefinition(bus) {
+class ArrivalsDef(bus: BotBus) : ScoreboardDef(bus) {
 
     override val headerMessage: String = "Arrivées à la gare de {0} :"
 
@@ -47,7 +52,7 @@ class ArrivalsStoryHandlerDefinition(bus: BotBus) : ScoreboardStoryHandlerDefini
 
     override fun timeFor(stop: StationStop): LocalDateTime = stop.stopDateTime.arrivalDateTime
 
-    override fun itemTitle(stop : StationStop) : CharSequence
+    override fun itemTitle(stop: StationStop): CharSequence
             = i18n(
             "{0} {1}",
             stop.displayInformations.commercialMode,

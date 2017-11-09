@@ -22,7 +22,9 @@ package fr.vsct.tock.bot.open.data.client.sncf
 import fr.vsct.tock.bot.open.data.client.sncf.model.ArrivalsResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.DeparturesResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.JourneysResponse
+import fr.vsct.tock.bot.open.data.client.sncf.model.PlacesNearbyResponse
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlacesResponse
+import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourneysResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -33,6 +35,9 @@ interface SncfOpenDataApi {
     @GET("places")
     fun places(@Query("q") query: String): Call<PlacesResponse>
 
+    @GET("places/{id}/places_nearby?distance=10000&type=stop_area")
+    fun placesNearby(@Path("id") id: String): Call<PlacesNearbyResponse>
+
     @GET("journeys")
     fun journeys(@Query("from") from: String, @Query("to") to: String, @Query("datetime") datetime: String): Call<JourneysResponse>
 
@@ -42,5 +47,7 @@ interface SncfOpenDataApi {
     @GET("stop_areas/{stopId}/arrivals")
     fun arrivals(@Path("stopId") stopId: String, @Query("from_datetime") datetime: String): Call<ArrivalsResponse>
 
+    @GET("vehicle_journeys/{vehicleId}")
+    fun vehicleJourneys(@Path("vehicleId") vehicleId: String): Call<VehicleJourneysResponse>
 }
 

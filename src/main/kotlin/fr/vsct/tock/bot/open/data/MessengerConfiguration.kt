@@ -53,6 +53,6 @@ object MessengerConfiguration {
                 pageToken,
                 applicationSecret,
                 webhookVerifyToken,
-                name = OpenDataBotDefinition.botId)
+                name = openBot.botId)
     }
 }

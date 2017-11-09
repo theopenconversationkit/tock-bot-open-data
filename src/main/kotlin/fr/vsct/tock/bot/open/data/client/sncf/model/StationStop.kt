@@ -28,5 +28,8 @@ data class StationStop(
         @JsonProperty("display_informations")
         val displayInformations: DisplayInformations,
         @JsonProperty("stop_date_time")
-        val stopDateTime: StopDateTime) {
+        val stopDateTime: StopDateTime,
+        val links: List<Link> = emptyList()) {
+
+        fun findVehicleId() : String? = links.find { it.type == "vehicle_journey" }?.id
 }

@@ -43,7 +43,7 @@ object Start {
         registerMessengerConnector()
         registerGoogleAssistantConnector()
 
-        registerBot(OpenDataBotDefinition)
+        registerBot(openBot)
 
         installBotsAndAdminConnectors()
 

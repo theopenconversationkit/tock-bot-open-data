@@ -19,85 +19,77 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.connector.ConnectorType
+import fr.vsct.tock.bot.connector.ga.GAHandler
 import fr.vsct.tock.bot.connector.ga.carouselItem
-import fr.vsct.tock.bot.connector.ga.gaConnectorType
 import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
 import fr.vsct.tock.bot.connector.ga.gaImage
+import fr.vsct.tock.bot.connector.messenger.MessengerHandler
 import fr.vsct.tock.bot.connector.messenger.flexibleListTemplate
 import fr.vsct.tock.bot.connector.messenger.listElement
-import fr.vsct.tock.bot.connector.messenger.messengerConnectorType
 import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
-import fr.vsct.tock.bot.definition.ConnectorStoryHandlerBase
+import fr.vsct.tock.bot.definition.ConnectorDef
+import fr.vsct.tock.bot.definition.HandlerDef
 import fr.vsct.tock.bot.definition.ParameterKey
-import fr.vsct.tock.bot.definition.StoryHandlerBase
-import fr.vsct.tock.bot.definition.StoryHandlerDefinitionBase
+import fr.vsct.tock.bot.definition.story
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.SharedIntent.indicate_location
-import fr.vsct.tock.bot.open.data.OpenDataStoryDefinition.search
+import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
+import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_origin
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.Section
 import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
-import fr.vsct.tock.bot.open.data.story.SearchStoryHandlerDefinition.SearchParameter.proposal
+import fr.vsct.tock.bot.open.data.story.SearchDef.SearchParameter.proposal
 import fr.vsct.tock.translator.by
 import java.time.LocalDateTime
 
 /**
  * The search intent handler.
  */
-object SearchStoryHandler : StoryHandlerBase<SearchStoryHandlerDefinition>() {
+val search = story<SearchDef>(
+        "search",
+        setOf(indicate_origin),
+        setOf(indicate_location)) { bus ->
 
-    override fun computeStoryHandlerDefinition(bus: BotBus): SearchStoryHandlerDefinition? {
-        with(bus) {
-            //handle generic location intent
-            if (isIntent(indicate_location) && location != null) {
-                if (destination == null || origin != null) {
-                    destination = returnsAndRemoveLocation()
-                } else {
-                    origin = returnsAndRemoveLocation()
-                }
-            }
-
-            //check mandatory entities
-            when {
-                destination == null -> end("Pour quelle destination?")
-                origin == null -> end("Pour quelle origine?")
-                departureDate == null -> end("Quand souhaitez-vous partir?")
-                else -> return SearchStoryHandlerDefinition(bus)
+    with(bus) {
+        //handle generic location intent
+        if (isIntent(indicate_location) && location != null) {
+            if (destination == null || origin != null) {
+                destination = returnsAndRemoveLocation()
+            } else {
+                origin = returnsAndRemoveLocation()
             }
         }
 
-        return null
+        //check mandatory entities
+        when {
+            destination == null -> end("Pour quelle destination?")
+            origin == null -> end("Pour quelle origine?")
+            departureDate == null -> end("Quand souhaitez-vous partir?")
+            else -> SearchDef(bus)
+        } as? SearchDef
     }
-
 }
 
 
 /**
  * The search handler definition.
  */
-class SearchStoryHandlerDefinition(bus: BotBus) : StoryHandlerDefinitionBase<SearchConnectorStoryHandler>(bus) {
+@GAHandler(GASearchConnector::class)
+@MessengerHandler(MessengerSearchConnector::class)
+class SearchDef(bus: BotBus) : HandlerDef<SearchConnector>(bus) {
 
     enum class SearchParameter : ParameterKey {
         proposal
     }
 
-    override fun provideConnector(connectorType: ConnectorType): SearchConnectorStoryHandler? =
-            when (connectorType) {
-                messengerConnectorType -> MessengerSearchConnectorStoryHandler(this)
-                gaConnectorType -> GaSearchConnectorStoryHandler(this)
-                else -> null
-            }
-
     private val d: Place = bus.destination!!
     private val o: Place = bus.origin!!
     private val date: LocalDateTime = bus.departureDate!!
 
-    override fun handle() {
+    override fun answer() {
         send("De {0} à {1}", o, d)
         send("Départ le {0} vers {1}", date by dateFormat, date by timeFormat)
         val journeys = SncfOpenDataClient.journey(o, d, date)
@@ -114,7 +106,8 @@ class SearchStoryHandlerDefinition(bus: BotBus) : StoryHandlerDefinitionBase<Sea
 /**
  * Connector specific behaviour.
  */
-sealed class SearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : ConnectorStoryHandlerBase<SearchStoryHandlerDefinition>(context) {
+sealed class SearchConnector(context: SearchDef)
+    : ConnectorDef<SearchDef>(context) {
 
     fun Section.title(): CharSequence = i18n("{0} - {1}", from, to)
 
@@ -129,12 +122,13 @@ sealed class SearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) 
     fun sendFirstJourney(journey: Journey) = sendFirstJourney(journey.publicTransportSections())
 
     abstract fun sendFirstJourney(sections: List<Section>)
+
 }
 
 /**
  * Messenger specific behaviour.
  */
-class MessengerSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : SearchConnectorStoryHandler(context) {
+class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
 
     override fun sendFirstJourney(sections: List<Section>) {
         withMessage(
@@ -157,7 +151,7 @@ class MessengerSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition
 /**
  * Google Assistant specific behaviour.
  */
-class GaSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : SearchConnectorStoryHandler(context) {
+class GASearchConnector(context: SearchDef) : SearchConnector(context) {
 
     override fun sendFirstJourney(sections: List<Section>) {
         withMessage(
@@ -177,3 +171,4 @@ class GaSearchConnectorStoryHandler(context: SearchStoryHandlerDefinition) : Sea
         )
     }
 }
+
