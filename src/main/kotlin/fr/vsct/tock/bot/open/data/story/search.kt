@@ -157,7 +157,7 @@ class GASearchConnector(context: SearchDef) : SearchConnector(context) {
         withMessage(
                 gaFlexibleMessageForCarousel(
                         sections.mapIndexed { i, section ->
-                            kotlin.with(section) {
+                            with(section) {
                                 carouselItem(
                                         search,
                                         title(),
