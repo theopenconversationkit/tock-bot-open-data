@@ -37,9 +37,9 @@ import fr.vsct.tock.shared.retrofitBuilderWithTimeoutAndLogger
 import mu.KotlinLogging
 import okhttp3.Credentials
 import okhttp3.Interceptor
+import org.litote.kmongo.toId
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit.MINUTES
 
 
 /**
@@ -69,14 +69,14 @@ object SncfOpenDataClient {
                     .create()
 
     fun places(query: String): List<Place> {
-        return getOrCache(query, "place") {
+        return getOrCache(query.toId(), "place") {
             api.places(query).execute().body()
         }?.places ?: emptyList()
     }
 
     fun bestPlaceMatch(query: String): Place? {
         val p = places(query).firstOrNull()
-        return if(p != null && p.embeddedType != "stop_area") {
+        return if (p != null && p.embeddedType != "stop_area") {
             api.placesNearby(p.id).execute().body()?.places?.firstOrNull()
         } else {
             p
@@ -88,18 +88,24 @@ object SncfOpenDataClient {
     }
 
     fun departures(from: Place, datetime: LocalDateTime): List<StationStop> {
-        return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "departures") {
-            api.departures(from.id, dateFormat.format(datetime)).execute().body()
-        }?.departures ?: emptyList()
+        return api
+                .departures(from.id, dateFormat.format(datetime))
+                .execute()
+                .body()
+                ?.departures
+                ?: emptyList()
     }
 
     fun arrivals(from: Place, datetime: LocalDateTime): List<StationStop> {
-        return getOrCache("${from.id}_${datetime.truncatedTo(MINUTES)}", "arrivals") {
-            api.arrivals(from.id, dateFormat.format(datetime)).execute().body()
-        }?.arrivals ?: emptyList()
+        return api
+                .arrivals(from.id, dateFormat.format(datetime))
+                .execute()
+                .body()
+                ?.arrivals
+                ?: emptyList()
     }
 
-    fun vehicleJourney(id:String) : VehicleJourney? {
+    fun vehicleJourney(id: String): VehicleJourney? {
         return api.vehicleJourneys(id).execute().body()?.vehicleJourney?.firstOrNull()
     }
 }
