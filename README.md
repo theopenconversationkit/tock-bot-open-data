@@ -41,4 +41,6 @@ The setup is explained in the [Tock docker project](https://github.com/voyages-s
       
               ```sh 
                   ngrok http 8080
-              ``` 
+              ```     
+
+* In the end you have to launch the class fr.vsct.tock.bot.open.data.StartKt. The bot is up! :)              
