@@ -21,13 +21,13 @@ package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.engine.dialog.ContextValue
-import fr.vsct.tock.bot.open.data.departureDateEntity
-import fr.vsct.tock.bot.open.data.destinationEntity
-import fr.vsct.tock.bot.open.data.locationEntity
-import fr.vsct.tock.bot.open.data.originEntity
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.departureDateEntity
+import fr.vsct.tock.bot.open.data.destinationEntity
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
+import fr.vsct.tock.bot.open.data.locationEntity
+import fr.vsct.tock.bot.open.data.originEntity
 import fr.vsct.tock.nlp.api.client.model.Entity
 import fr.vsct.tock.nlp.entity.date.DateEntityRange
 import fr.vsct.tock.shared.defaultZoneId
@@ -60,18 +60,19 @@ fun findPlace(name: String): Place? {
     return findPlaceValue(name)?.place
 }
 
-private fun BotBus.place(entity: Entity): Place? = entities[entity.role]?.value?.placeValue()?.place
+private fun BotBus.place(entity: Entity): Place? = entityValue(entity, ::placeValue)?.place
 
 private fun BotBus.setPlace(entity: Entity, place: Place?) = changeEntityValue(entity, place?.let { PlaceValue(place) })
 
-private fun ContextValue?.placeValue(): PlaceValue? {
-    return if (this == null) null
-    else if (evaluated && value is PlaceValue) {
-        value as PlaceValue
-    } else {
-        content?.let {
-            findPlaceValue(it)?.let {
-                changeValue(it).value as PlaceValue
+private fun placeValue(context: ContextValue): PlaceValue? {
+    return with(context) {
+        if (evaluated && value is PlaceValue) {
+            value as PlaceValue
+        } else {
+            content?.let {
+                findPlaceValue(it)?.let {
+                    changeValue(it).value as PlaceValue
+                }
             }
         }
     }

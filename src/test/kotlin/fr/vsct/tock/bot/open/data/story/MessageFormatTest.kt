@@ -19,17 +19,17 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import java.time.LocalDateTime
 
 /**
  *
  */
-object MessageFormat {
+class MessageFormatTest {
 
-    /**
-     * To format departure datetime.
-     */
-    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
-    val datetimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM 'vers' H:mm").withLocale(Locale.FRENCH)
+    @Test
+    fun testDatetimeFormat_formatWell() {
+        assertEquals("lundi 3 février vers 12:23", MessageFormat.datetimeFormat.format(LocalDateTime.of(2020, 2, 3, 12, 23)))
+    }
 }

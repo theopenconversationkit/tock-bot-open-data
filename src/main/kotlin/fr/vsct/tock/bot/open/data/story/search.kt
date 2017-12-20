@@ -39,7 +39,7 @@ import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.Section
-import fr.vsct.tock.bot.open.data.story.MessageFormat.dateFormat
+import fr.vsct.tock.bot.open.data.story.MessageFormat.datetimeFormat
 import fr.vsct.tock.bot.open.data.story.MessageFormat.timeFormat
 import fr.vsct.tock.bot.open.data.story.SearchDef.SearchParameter.proposal
 import fr.vsct.tock.translator.by
@@ -91,7 +91,7 @@ class SearchDef(bus: BotBus) : HandlerDef<SearchConnector>(bus) {
 
     override fun answer() {
         send("De {0} à {1}", o, d)
-        send("Départ le {0} vers {1}", date by dateFormat, date by timeFormat)
+        send("Départ le {0}", date by datetimeFormat)
         val journeys = SncfOpenDataClient.journey(o, d, date)
         if (journeys.isEmpty()) {
             end("Désolé, aucun itinéraire trouvé :(")
