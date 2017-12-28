@@ -40,7 +40,9 @@ var BotBus.origin: Place?
     get() = place(originEntity)
     set(value) = setPlace(originEntity, value)
 
-val BotBus.location: Place? get() = place(locationEntity)
+var BotBus.location: Place?
+    get() = place(locationEntity)
+    set(value) = setPlace(locationEntity, value)
 
 var BotBus.destination: Place?
     get() = place(destinationEntity)
