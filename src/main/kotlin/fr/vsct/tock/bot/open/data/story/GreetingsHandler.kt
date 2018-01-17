@@ -34,23 +34,23 @@ val greetings = story("greetings") { bus ->
         //cleanup state
         resetDialogState()
 
-        send("Bienvenue chez le Bot Open Data Sncf! :)")
-        send("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
+        send("Welcome to the Tock Open Data Bot! :)")
+        send("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
 
         withMessenger {
             buttonsTemplate(
-                    "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
-                    postbackButton("Itinéraires", search),
-                    postbackButton("Départs", Departures),
-                    postbackButton("Arrivées", Arrivals)
+                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                    postbackButton("Itineraries", search),
+                    postbackButton("Departures", Departures),
+                    postbackButton("Arrivals", Arrivals)
             )
         }
         withGoogleAssistant {
             gaMessage(
-                    "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :) ",
-                    "Itinéraires",
-                    "Départs",
-                    "Arrivées")
+                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                    "Itineraries",
+                    "Departures",
+                    "Arrivals")
         }
 
         end()

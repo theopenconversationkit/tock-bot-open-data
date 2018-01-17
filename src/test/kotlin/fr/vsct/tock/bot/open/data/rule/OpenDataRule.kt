@@ -17,26 +17,24 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.vsct.tock.bot.open.data.story
+package fr.vsct.tock.bot.open.data.rule
 
-import fr.vsct.tock.shared.defaultLocale
-import fr.vsct.tock.translator.DateTimeFormatterProvider
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.bind
+import com.github.salomonbrys.kodein.provider
+import fr.vsct.tock.bot.test.TockRule
+import fr.vsct.tock.translator.TranslatorEngine
+import testTranslatorModule
 
 /**
- * To format departure datetime.
+ *
  */
-object MessageFormat {
+class OpenDataRule : TockRule() {
 
-    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
-
-    val datetimeFormat = object : DateTimeFormatterProvider {
-        override fun provide(locale: Locale): DateTimeFormatter {
-            return when (locale) {
-                Locale.FRENCH -> DateTimeFormatter.ofPattern("EEEE d MMMM 'vers' H:mm").withLocale(Locale.FRENCH)
-                else -> DateTimeFormatter.ofPattern("EEEE, MMMM d, 'around' H:mm").withLocale(defaultLocale)
-            }
+    override fun reset() {
+        super.reset()
+        testTranslatorModule = Kodein.Module {
+            bind<TranslatorEngine>() with provider { TranslatorEngineMock }
         }
     }
 }

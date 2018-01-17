@@ -31,7 +31,7 @@ The setup is explained in the [Tock docker project](https://github.com/voyages-s
         * the url : https://xxxx.ngrok.io/messenger
         * the verify token you set in tock_bot_open_data_webhook_verify_token env var
         
-* To setup Google Assistant (optional), you need a google account and a google actions project with Actions sdk setup - see https://developers.google.com/actions/sdk/create-a-project
+* To setup Google Assistant (optional), you need a Google account and a Google Actions project with Actions sdk setup - see https://developers.google.com/actions/sdk/create-a-project
       
      * Also a secure ssl tunnel (for example [ngrok](https://ngrok.com/)) is required to test the bot directly on your desktop:
            
@@ -39,6 +39,6 @@ The setup is explained in the [Tock docker project](https://github.com/voyages-s
                   ngrok http 8080
               ```     
 
-     * A sample action project configuration is available here : [google_actions_fr.json](https://raw.githubusercontent.com/voyages-sncf-technologies/tock-bot-open-data/master/src/main/resources/google_actions_fr.json) - you will need to set the ngrock host.      
+     * A sample action project configuration is available here : [google_actions_fr.json](https://raw.githubusercontent.com/voyages-sncf-technologies/tock-bot-open-data/master/src/main/resources/google_actions_fr.json) - you will need to set the ngrok host.      
 
 * In the end you have to launch the class fr.vsct.tock.bot.open.data.StartKt. The bot is up! :)              

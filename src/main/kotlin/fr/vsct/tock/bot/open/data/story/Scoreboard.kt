@@ -70,10 +70,10 @@ enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
         override fun answer(handler: ScoreboardDef): Unit =
                 with(handler) {
                     if (displayedStops.isEmpty()) {
-                        end("Aucune proposition à choisir. :(")
+                        end("No proposal to choose. :(")
                     }
                     if (ordinal < 0 || ordinal >= displayedStops.size) {
-                        end("Je ne trouve pas cette proposition. :(")
+                        end("I do not find this proposal. :(")
                     } else {
                         val stop = displayedStops[ordinal]
                         stop.findVehicleId()
@@ -82,7 +82,7 @@ enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
                                     handler.connector?.displayDetails(it)
                                     end()
                                 }
-                                ?: end("Trajet non trouvé")
+                                ?: end("Trip not found")
                     }
                 }
     },
@@ -199,7 +199,7 @@ abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus)
                     .filter { timeFor(it) >= currentDate }
                     .also { filteredStops ->
                         if (filteredStops.isEmpty()) {
-                            end("Oups, plus de résultats, désolé :(")
+                            end("Oops, no more results, sorry :(")
                         } else {
                             filteredStops.take(maxProposals).let {
                                 connector?.display(it, nextDate)
@@ -305,7 +305,7 @@ class GAScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(contex
                                             SecondaryIntent.select,
                                             (it.stopPoint?.name ?: "").raw,
                                             it.departureTime?.format(timeFormat)?.raw,
-                                            gaImage(stationImage, "gare"),
+                                            gaImage(stationImage, "station"),
                                             proposal[i]
                                     )
                                 }

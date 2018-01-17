@@ -1,0 +1,27 @@
+{
+  "actions": [
+    {
+      "description": "Default Welcome Intent",
+      "name": "MAIN",
+      "fulfillment": {
+        "conversationName": "main"
+      },
+      "intent": {
+        "name": "actions.intent.MAIN",
+        "trigger": {
+          "queryPatterns": [
+            "talk to Open Data"
+          ]
+        }
+      }
+    }
+  ],
+  "conversations": {
+    "main": {
+      "name": "main",
+      "url": "https://[HOST]/ga/bot_open_data",
+      "fulfillmentApiVersion":2
+    }
+  },
+  "locale": "en"
+}

@@ -65,9 +65,9 @@ val search = story<SearchDef>(
 
         //check mandatory entities
         when {
-            destination == null -> end("Pour quelle destination?")
-            origin == null -> end("Pour quelle origine?")
-            departureDate == null -> end("Quand souhaitez-vous partir?")
+            destination == null -> end("For which destination?")
+            origin == null -> end("For which origin?")
+            departureDate == null -> end("When?")
             else -> SearchDef(bus)
         } as? SearchDef
     }
@@ -90,13 +90,13 @@ class SearchDef(bus: BotBus) : HandlerDef<SearchConnector>(bus) {
     private val date: LocalDateTime = bus.departureDate!!
 
     override fun answer() {
-        send("De {0} à {1}", o, d)
-        send("Départ le {0}", date by datetimeFormat)
+        send("From {0} to {1}", o, d)
+        send("Departure on {0}", date by datetimeFormat)
         val journeys = SncfOpenDataClient.journey(o, d, date)
         if (journeys.isEmpty()) {
-            end("Désolé, aucun itinéraire trouvé :(")
+            end("Sorry, no routes found :(")
         } else {
-            send("Voici la première proposition :")
+            send("Here is the first proposal:")
             connector?.sendFirstJourney(journeys.first())
             end()
         }
@@ -113,7 +113,7 @@ sealed class SearchConnector(context: SearchDef)
 
     fun Section.content(): CharSequence =
             i18n(
-                    "Départ à {0}, arrivée à {1}",
+                    "Departure at {0}, arrival at {1}",
                     stopDateTimes.first().departureDateTime by timeFormat,
                     stopDateTimes.last().arrivalDateTime by timeFormat
             )

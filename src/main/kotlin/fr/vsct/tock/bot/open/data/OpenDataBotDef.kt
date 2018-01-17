@@ -22,6 +22,7 @@ package fr.vsct.tock.bot.open.data
 import fr.vsct.tock.bot.definition.IntentDef
 import fr.vsct.tock.bot.definition.bot
 import fr.vsct.tock.bot.open.data.story.arrivals
+import fr.vsct.tock.bot.open.data.story.changeLanguage
 import fr.vsct.tock.bot.open.data.story.departures
 import fr.vsct.tock.bot.open.data.story.greetings
 import fr.vsct.tock.bot.open.data.story.search
@@ -36,13 +37,14 @@ val openBot = bot(
                 greetings,
                 departures,
                 arrivals,
-                search
+                search,
+                changeLanguage
         ),
         hello = greetings
 )
 
 /**
- * Secondary (shared between stories) intents supported by the bot.
+ * Secondary intents supported by the bot.
  */
 enum class SecondaryIntent : IntentDef {
 

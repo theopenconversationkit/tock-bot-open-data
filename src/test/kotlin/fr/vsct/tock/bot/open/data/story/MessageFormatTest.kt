@@ -22,6 +22,7 @@ package fr.vsct.tock.bot.open.data.story
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
+import java.util.Locale
 
 /**
  *
@@ -29,7 +30,7 @@ import java.time.LocalDateTime
 class MessageFormatTest {
 
     @Test
-    fun testDatetimeFormat_formatWell() {
-        assertEquals("lundi 3 février vers 12:23", MessageFormat.datetimeFormat.format(LocalDateTime.of(2020, 2, 3, 12, 23)))
+    fun testDatetimeFormat_formatWell_ForFrench() {
+        assertEquals("lundi 3 février vers 12:23", MessageFormat.datetimeFormat.provide(Locale.FRENCH).format(LocalDateTime.of(2020, 2, 3, 12, 23)))
     }
 }

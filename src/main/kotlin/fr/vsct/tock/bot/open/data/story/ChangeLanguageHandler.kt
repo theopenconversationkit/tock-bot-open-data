@@ -19,24 +19,18 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.shared.defaultLocale
-import fr.vsct.tock.translator.DateTimeFormatterProvider
-import java.time.format.DateTimeFormatter
+import fr.vsct.tock.bot.definition.story
 import java.util.Locale
 
 /**
- * To format departure datetime.
+ * To handle locale switch.
  */
-object MessageFormat {
-
-    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
-
-    val datetimeFormat = object : DateTimeFormatterProvider {
-        override fun provide(locale: Locale): DateTimeFormatter {
-            return when (locale) {
-                Locale.FRENCH -> DateTimeFormatter.ofPattern("EEEE d MMMM 'vers' H:mm").withLocale(Locale.FRENCH)
-                else -> DateTimeFormatter.ofPattern("EEEE, MMMM d, 'around' H:mm").withLocale(defaultLocale)
-            }
+val changeLanguage = story("change_language") { bus ->
+    with(bus) {
+        with(userPreferences) {
+            locale = if (locale.language == Locale.ENGLISH.language) Locale.FRENCH else Locale.ENGLISH
+            end("Language switch to {0}", locale)
         }
+
     }
 }

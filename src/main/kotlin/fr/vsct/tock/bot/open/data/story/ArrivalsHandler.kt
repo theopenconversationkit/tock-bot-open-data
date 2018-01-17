@@ -36,17 +36,17 @@ val arrivals = storyWithSteps<ScoreboardSteps>(
 
 object Arrivals : Scoreboard() {
 
-    override val missingOriginMessage = "De quelle gare souhaitez vous voir les arrivées?"
+    override val missingOriginMessage = "Which station would you like to see the arrivals from?"
     override fun scoreboardDef(bus: BotBus): ScoreboardDef = ArrivalsDef(bus)
 }
 
 class ArrivalsDef(bus: BotBus) : ScoreboardDef(bus) {
 
-    override val headerMessage: String = "Arrivées à la gare de {0} :"
+    override val headerMessage: String = "Arrivals at {0}:"
 
-    override val noResultMessage: String = "Oups, aucune arrivée trouvée actuellement, désolé :("
+    override val noResultMessage: String = "Oops, no arrival currently found, sorry :("
 
-    override val nextMessage: String = "Arrivées suivantes"
+    override val nextMessage: String = "Next arrivals"
 
     override fun retrieveStops(): List<StationStop> = SncfOpenDataClient.arrivals(o, currentDate)
 
@@ -58,7 +58,7 @@ class ArrivalsDef(bus: BotBus) : ScoreboardDef(bus) {
             stop.displayInformations.commercialMode,
             stop.displayInformations.headsign)
 
-    override val itemSubtitleMessage = "Arrivée {0}"
+    override val itemSubtitleMessage = "Arrival at {0}"
 
 
 }

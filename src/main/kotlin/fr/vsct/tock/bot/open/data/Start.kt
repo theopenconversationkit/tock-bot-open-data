@@ -19,13 +19,13 @@
 
 package fr.vsct.tock.bot.open.data
 
+import fr.vsct.tock.bot.importI18nDump
 import fr.vsct.tock.bot.importNlpDump
 import fr.vsct.tock.bot.open.data.GoogleAssistantConfiguration.registerGoogleAssistantConnector
 import fr.vsct.tock.bot.open.data.MessengerConfiguration.registerMessengerConnector
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.registerAndInstallBot
 import fr.vsct.tock.nlp.entity.ValueResolverRepository
-import fr.vsct.tock.translator.Translator
 
 fun main(args: Array<String>) {
     Start.start()
@@ -45,14 +45,13 @@ object Start {
         registerAndInstallBot(openBot)
 
         importNlpDump("/bot_open_data.json")
+        importI18nDump("/labels.json")
     }
 
     private fun setup() {
-        Translator.enabled = true
         //we add a new value type in order to manage open data api place
         ValueResolverRepository.registerType(PlaceValue::class)
-        //set default locale and default zone id
-        System.setProperty("tock_default_locale", "fr")
+        //set default zone id, these are french trains, so...
         System.setProperty("tock_default_zone", "Europe/Paris")
     }
 }
