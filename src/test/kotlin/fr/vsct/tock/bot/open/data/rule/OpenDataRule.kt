@@ -22,17 +22,18 @@ package fr.vsct.tock.bot.open.data.rule
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.provider
-import fr.vsct.tock.bot.test.TockRule
+import fr.vsct.tock.bot.open.data.openBot
+import fr.vsct.tock.bot.test.TestContext
+import fr.vsct.tock.bot.test.junit.TockJUnit4Rule
 import fr.vsct.tock.translator.TranslatorEngine
 import testTranslatorModule
 
 /**
  *
  */
-class OpenDataRule : TockRule() {
+class OpenDataRule : TockJUnit4Rule<TestContext>(openBot) {
 
-    override fun reset() {
-        super.reset()
+    init {
         testTranslatorModule = Kodein.Module {
             bind<TranslatorEngine>() with provider { TranslatorEngineMock }
         }

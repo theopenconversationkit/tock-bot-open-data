@@ -27,6 +27,7 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
+import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.shared.addJacksonConverter
 import fr.vsct.tock.shared.cache.getOrCache
 import fr.vsct.tock.shared.create
@@ -67,6 +68,12 @@ object SncfOpenDataClient {
                     ))
                     .build()
                     .create()
+
+    fun findPlaceValue(name: String): PlaceValue? {
+        return bestPlaceMatch(name)?.let {
+            PlaceValue(it)
+        }
+    }
 
     fun places(query: String): List<Place> {
         return getOrCache(query.toId(), "place") {

@@ -19,6 +19,7 @@
 
 package fr.vsct.tock.bot.open.data
 
+import fr.vsct.tock.bot.engine.BotRepository
 import fr.vsct.tock.bot.importI18nDump
 import fr.vsct.tock.bot.importNlpDump
 import fr.vsct.tock.bot.open.data.GoogleAssistantConfiguration.registerGoogleAssistantConnector
@@ -41,6 +42,8 @@ object Start {
 
         registerMessengerConnector()
         registerGoogleAssistantConnector()
+
+        BotRepository.registerNlpListener(OpenDataNlpListener)
 
         registerAndInstallBot(openBot)
 

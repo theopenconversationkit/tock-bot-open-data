@@ -22,6 +22,7 @@ package fr.vsct.tock.bot.open.data.story
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.engine.dialog.ContextValue
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
+import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient.findPlaceValue
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.departureDateEntity
 import fr.vsct.tock.bot.open.data.destinationEntity
@@ -71,20 +72,11 @@ private fun placeValue(context: ContextValue): PlaceValue? {
         if (evaluated && value is PlaceValue) {
             value as PlaceValue
         } else {
-            content?.let {
-                findPlaceValue(it)?.let {
-                    changeValue(it).value as PlaceValue
-                }
-            }
+            null
         }
     }
 }
 
-private fun findPlaceValue(name: String): PlaceValue? {
-    return SncfOpenDataClient.bestPlaceMatch(name)?.let {
-        PlaceValue(it)
-    }
-}
 
 
 
