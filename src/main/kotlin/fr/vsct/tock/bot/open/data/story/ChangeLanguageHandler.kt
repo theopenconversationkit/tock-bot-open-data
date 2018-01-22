@@ -25,12 +25,9 @@ import java.util.Locale
 /**
  * To handle locale switch.
  */
-val changeLanguage = story("change_language") { bus ->
-    with(bus) {
-        with(userPreferences) {
-            locale = if (locale.language == Locale.ENGLISH.language) Locale.FRENCH else Locale.ENGLISH
-            end("Language switch to {0}", locale)
-        }
-
+val changeLanguage = story("change_language") {
+    with(userPreferences) {
+        locale = if (locale.language == Locale.ENGLISH.language) Locale.FRENCH else Locale.ENGLISH
+        end("Language switch to {0}", locale)
     }
 }

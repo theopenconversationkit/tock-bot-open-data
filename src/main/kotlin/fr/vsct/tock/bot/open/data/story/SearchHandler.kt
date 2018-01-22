@@ -48,29 +48,26 @@ import java.time.LocalDateTime
 /**
  * The search intent handler.
  */
-val search = story<SearchDef>(
+val search = story(
         "search",
         setOf(indicate_origin),
-        setOf(indicate_location)) { bus ->
-
-    with(bus) {
-        //handle generic location intent
-        if (isIntent(indicate_location) && location != null) {
-            if (destination == null || origin != null) {
-                destination = returnsAndRemoveLocation()
-            } else {
-                origin = returnsAndRemoveLocation()
-            }
+        setOf(indicate_location)) {
+    //handle generic location intent
+    if (isIntent(indicate_location) && location != null) {
+        if (destination == null || origin != null) {
+            destination = returnsAndRemoveLocation()
+        } else {
+            origin = returnsAndRemoveLocation()
         }
-
-        //check mandatory entities
-        when {
-            destination == null -> end("For which destination?")
-            origin == null -> end("For which origin?")
-            departureDate == null -> end("When?")
-            else -> SearchDef(bus)
-        } as? SearchDef
     }
+
+    //check mandatory entities
+    when {
+        destination == null -> end("For which destination?")
+        origin == null -> end("For which origin?")
+        departureDate == null -> end("When?")
+        else -> SearchDef(this)
+    } as? SearchDef
 }
 
 

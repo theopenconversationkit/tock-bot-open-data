@@ -29,30 +29,28 @@ import fr.vsct.tock.bot.definition.story
 /**
  * The greetings handler.
  */
-val greetings = story("greetings") { bus ->
-    with(bus) {
-        //cleanup state
-        resetDialogState()
+val greetings = story("greetings") {
+    //cleanup state
+    resetDialogState()
 
-        send("Welcome to the Tock Open Data Bot! :)")
-        send("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
+    send("Welcome to the Tock Open Data Bot! :)")
+    send("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
 
-        withMessenger {
-            buttonsTemplate(
-                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                    postbackButton("Itineraries", search),
-                    postbackButton("Departures", Departures),
-                    postbackButton("Arrivals", Arrivals)
-            )
-        }
-        withGoogleAssistant {
-            gaMessage(
-                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                    "Itineraries",
-                    "Departures",
-                    "Arrivals")
-        }
-
-        end()
+    withMessenger {
+        buttonsTemplate(
+                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                postbackButton("Itineraries", search),
+                postbackButton("Departures", Departures),
+                postbackButton("Arrivals", Arrivals)
+        )
     }
+    withGoogleAssistant {
+        gaMessage(
+                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                "Itineraries",
+                "Departures",
+                "Arrivals")
+    }
+
+    end()
 }
