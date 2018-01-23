@@ -25,6 +25,7 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.open.data.rule.OpenDataRule
 import fr.vsct.tock.bot.test.startMock
+import fr.vsct.tock.bot.test.toBusMock
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
@@ -63,38 +64,28 @@ class SearchTest {
 
     @Test
     fun search_shouldAskForOrigin_WhenThereIsDestinationButNoOriginInContext() {
-        val bus = openBot.startMock(search, locale = Locale.FRENCH)
 
-        with(bus) {
-            firstAnswer.assertText("Pour quelle destination?")
+        with(openBot.toBusMock(search, locale = Locale.FRENCH)) {
 
             destination = mockedDestination
 
             run()
-
-            secondAnswer.assertText("Pour quelle origine?")
+            
+            firstAnswer.assertText("Pour quelle origine?")
         }
     }
 
     @Test
     fun search_shouldAskForDepartureDate_WhenThereIsDestinationAndOriginButNoDepartureDateInContext() {
-        val bus = openBot.startMock(search, locale = Locale.FRENCH)
 
-        with(bus) {
-            firstAnswer.assertText("Pour quelle destination?")
-
+        with(openBot.toBusMock(search, locale = Locale.FRENCH)) {
             destination = mockedDestination
-
-            run()
-
-            secondAnswer.assertText("Pour quelle origine?")
-
             intent = indicate_location
             location = mockedOrigin
 
             run()
 
-            thirdAnswer.assertText("Quand souhaitez-vous partir?")
+            firstAnswer.assertText("Quand souhaitez-vous partir?")
         }
     }
 

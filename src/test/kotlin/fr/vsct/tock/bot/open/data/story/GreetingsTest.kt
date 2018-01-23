@@ -41,17 +41,15 @@ class GreetingsTest {
 
     @Test
     fun greetings_shouldDisplayWelcomeMessage_whenLocaleIsFr() {
-        val bus = openBot.startMock(locale = Locale.FRENCH)
-
-        bus.firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
-        bus.secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
+        with(openBot.startMock(locale = Locale.FRENCH)) {
+            firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
+            secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
+        }
     }
 
     @Test
     fun greetings_shouldDisplayWelcomeMessageWithMessengerDedicatedMessage_whenMessengerConnectorTypeIsUsedAndLocaleIsFr() {
-        val bus = openBot.startMock(locale = Locale.FRENCH)
-
-        with(bus) {
+        with(openBot.startMock(locale = Locale.FRENCH)) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
@@ -67,9 +65,7 @@ class GreetingsTest {
 
     @Test
     fun greetings_shouldDisplayWelcomeMessageWithGaDedicatedMessage_whenGaConnectorTypeIsUsedAndLocaleIsFr() {
-        val bus = openBot.startMock(connectorType = gaConnectorType, locale = Locale.FRENCH)
-
-        with(bus) {
+        with(openBot.startMock(connectorType = gaConnectorType, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(

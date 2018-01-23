@@ -37,7 +37,7 @@ val arrivals = storyWithSteps<ScoreboardSteps>(
 object Arrivals : Scoreboard() {
 
     override val missingOriginMessage = "Which station would you like to see the arrivals from?"
-    override fun scoreboardDef(bus: BotBus): ScoreboardDef = ArrivalsDef(bus)
+    override fun newHandlerDefinition(bus: BotBus): ScoreboardDef = ArrivalsDef(bus)
 }
 
 class ArrivalsDef(bus: BotBus) : ScoreboardDef(bus) {

@@ -66,30 +66,28 @@ enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
     select {
 
         override val intent: IntentAware? = SecondaryIntent.select
-
-        override fun answer(handler: ScoreboardDef): Unit =
-                with(handler) {
-                    if (displayedStops.isEmpty()) {
-                        end("No proposal to choose. :(")
-                    }
-                    if (ordinal < 0 || ordinal >= displayedStops.size) {
-                        end("I do not find this proposal. :(")
-                    } else {
-                        val stop = displayedStops[ordinal]
-                        stop.findVehicleId()
-                                ?.let { SncfOpenDataClient.vehicleJourney(it) }
-                                ?.also {
-                                    handler.connector?.displayDetails(it)
-                                    end()
-                                }
-                                ?: end("Trip not found")
-                    }
-                }
+        override fun answer(): ScoreboardDef.() -> Any? = {
+            if (displayedStops.isEmpty()) {
+                end("No proposal to choose. :(")
+            }
+            if (ordinal < 0 || ordinal >= displayedStops.size) {
+                end("I do not find this proposal. :(")
+            } else {
+                val stop = displayedStops[ordinal]
+                stop.findVehicleId()
+                        ?.let { SncfOpenDataClient.vehicleJourney(it) }
+                        ?.also {
+                            connector?.displayDetails(it)
+                            end()
+                        }
+                        ?: end("Trip not found")
+            }
+        }
     },
 
     disruption {
-        override fun answer(handler: ScoreboardDef): Unit? {
-            return handler.answer()
+        override fun answer(): ScoreboardDef.() -> Any? = {
+            answer()
         }
     };
 
@@ -102,30 +100,24 @@ abstract class Scoreboard : Handler<ScoreboardDef>() {
 
     abstract val missingOriginMessage: String
 
-    abstract fun scoreboardDef(bus: BotBus): ScoreboardDef
+    override fun checkPreconditions(): BotBus.() -> Unit = {
+        //check location entity
+        if (location != null) {
+            origin = returnsAndRemoveLocation()
+        }
 
-    override fun setupHandlerDef(bus: BotBus): ScoreboardDef? {
-        with(bus) {
-            //check location entity
-            if (location != null) {
-                origin = returnsAndRemoveLocation()
-            }
+        //handle next result
+        choice(nextResultOrigin)
+                ?.run {
+                    origin = findPlace(this)
+                }
 
-            //handle next result
-            choice(nextResultOrigin)
-                    ?.run {
-                        origin = findPlace(this)
-                    }
-
-            //check mandatory entities
-            when (origin) {
-                null -> end(missingOriginMessage)
-                else -> return scoreboardDef(bus)
-            }
-
-            return null
+        //check mandatory entities
+        if (origin == null) {
+            end(missingOriginMessage)
         }
     }
+
 }
 
 @GAHandler(GAScoreboardConnector::class)
@@ -217,8 +209,7 @@ abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus)
 sealed class ScoreboardConnector(context: ScoreboardDef)
     : ConnectorDef<ScoreboardDef>(context) {
 
-    fun ScoreboardDef.subtitle(stop: StationStop): CharSequence
-            = i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
+    fun ScoreboardDef.subtitle(stop: StationStop): CharSequence = i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
 
     abstract fun display(trains: List<StationStop>, nextDate: LocalDateTime)
 

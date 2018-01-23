@@ -30,7 +30,7 @@ import fr.vsct.tock.bot.connector.messenger.model.send.ListElementStyle.compact
 import fr.vsct.tock.bot.definition.ConnectorDef
 import fr.vsct.tock.bot.definition.HandlerDef
 import fr.vsct.tock.bot.definition.ParameterKey
-import fr.vsct.tock.bot.definition.story
+import fr.vsct.tock.bot.definition.storyDef
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
 import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
@@ -48,7 +48,7 @@ import java.time.LocalDateTime
 /**
  * The search intent handler.
  */
-val search = story(
+val search = storyDef<SearchDef>(
         "search",
         setOf(indicate_origin),
         setOf(indicate_location)) {
@@ -66,8 +66,7 @@ val search = story(
         destination == null -> end("For which destination?")
         origin == null -> end("For which origin?")
         departureDate == null -> end("When?")
-        else -> SearchDef(this)
-    } as? SearchDef
+    }
 }
 
 
