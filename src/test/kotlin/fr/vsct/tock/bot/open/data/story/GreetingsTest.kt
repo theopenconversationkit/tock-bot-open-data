@@ -23,9 +23,7 @@ import fr.vsct.tock.bot.connector.ga.gaConnectorType
 import fr.vsct.tock.bot.connector.ga.gaMessage
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
-import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.open.data.rule.OpenDataRule
-import fr.vsct.tock.bot.test.startMock
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
@@ -41,7 +39,7 @@ class GreetingsTest {
 
     @Test
     fun greetings_shouldDisplayWelcomeMessage_whenLocaleIsFr() {
-        with(openBot.startMock(locale = Locale.FRENCH)) {
+        with(rule.startNewBusMock(locale = Locale.FRENCH)) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
         }
@@ -49,7 +47,7 @@ class GreetingsTest {
 
     @Test
     fun greetings_shouldDisplayWelcomeMessageWithMessengerDedicatedMessage_whenMessengerConnectorTypeIsUsedAndLocaleIsFr() {
-        with(openBot.startMock(locale = Locale.FRENCH)) {
+        with(rule.startNewBusMock(locale = Locale.FRENCH)) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
@@ -65,7 +63,7 @@ class GreetingsTest {
 
     @Test
     fun greetings_shouldDisplayWelcomeMessageWithGaDedicatedMessage_whenGaConnectorTypeIsUsedAndLocaleIsFr() {
-        with(openBot.startMock(connectorType = gaConnectorType, locale = Locale.FRENCH)) {
+        with(rule.startNewBusMock(connectorType = gaConnectorType, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(

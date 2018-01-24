@@ -22,10 +22,7 @@ package fr.vsct.tock.bot.open.data.story
 import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.model.Coordinates
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
-import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.open.data.rule.OpenDataRule
-import fr.vsct.tock.bot.test.startMock
-import fr.vsct.tock.bot.test.toBusMock
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
@@ -57,28 +54,30 @@ class SearchTest {
 
     @Test
     fun search_shouldAskForDestination_WhenNoDestinationInContext() {
-        val bus = openBot.startMock(search, locale = Locale.FRENCH)
-
-        bus.firstAnswer.assertText("Pour quelle destination?")
+        with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
+            firstAnswer.assertText("Pour quelle destination?")
+        }
     }
 
     @Test
     fun search_shouldAskForOrigin_WhenThereIsDestinationButNoOriginInContext() {
-
-        with(openBot.toBusMock(search, locale = Locale.FRENCH)) {
-
+        with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
+            firstAnswer.assertText("Pour quelle destination?")
             destination = mockedDestination
-
-            run()
-            
-            firstAnswer.assertText("Pour quelle origine?")
+        }
+        with(rule.startBusMock()) {
+            firstBusAnswer.assertText("Pour quelle origine?")
+            origin = mockedOrigin
+        }
+        with(rule.startBusMock()) {
+            firstBusAnswer.assertText("Quand souhaitez-vous partir?")
         }
     }
 
     @Test
     fun search_shouldAskForDepartureDate_WhenThereIsDestinationAndOriginButNoDepartureDateInContext() {
 
-        with(openBot.toBusMock(search, locale = Locale.FRENCH)) {
+        with(rule.newBusMock(story = search, locale = Locale.FRENCH)) {
             destination = mockedDestination
             intent = indicate_location
             location = mockedOrigin
