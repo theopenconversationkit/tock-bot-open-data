@@ -53,14 +53,14 @@ class SearchTest {
             Coordinates(50.638861, 3.075774))
 
     @Test
-    fun search_shouldAskForDestination_WhenNoDestinationInContext() {
+    fun `search story asks for destination WHEN there is no destination in context`() {
         with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Pour quelle destination?")
         }
     }
 
     @Test
-    fun search_shouldAskForOrigin_WhenThereIsDestinationButNoOriginInContext() {
+    fun `search story asks for origin WHEN there is a destination but no origin in context`() {
         with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Pour quelle destination?")
             destination = mockedDestination
@@ -75,7 +75,7 @@ class SearchTest {
     }
 
     @Test
-    fun search_shouldAskForDepartureDate_WhenThereIsDestinationAndOriginButNoDepartureDateInContext() {
+    fun `search story asks for departure date WHEN there is a destination and an origin but no departure date in context`() {
 
         with(rule.newBusMock(story = search, locale = Locale.FRENCH)) {
             destination = mockedDestination
