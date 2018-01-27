@@ -19,6 +19,7 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.connector.ConnectorMessage
 import fr.vsct.tock.bot.connector.ga.GAHandler
 import fr.vsct.tock.bot.connector.ga.carouselItem
 import fr.vsct.tock.bot.connector.ga.gaFlexibleMessageForCarousel
@@ -115,9 +116,9 @@ sealed class SearchConnector(context: SearchDef)
             )
 
 
-    fun sendFirstJourney(journey: Journey) = sendFirstJourney(journey.publicTransportSections())
+    fun sendFirstJourney(journey: Journey) = withMessage(sendFirstJourney(journey.publicTransportSections()))
 
-    abstract fun sendFirstJourney(sections: List<Section>)
+    abstract fun sendFirstJourney(sections: List<Section>): ConnectorMessage
 
 }
 
@@ -126,22 +127,19 @@ sealed class SearchConnector(context: SearchDef)
  */
 class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
 
-    override fun sendFirstJourney(sections: List<Section>) {
-        withMessage(
-                flexibleListTemplate(
-                        sections.map { section ->
-                            with(section) {
-                                listElement(
-                                        title(),
-                                        content(),
-                                        trainImage
-                                )
-                            }
-                        },
-                        compact
-                )
-        )
-    }
+    override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
+            flexibleListTemplate(
+                    sections.map { section ->
+                        with(section) {
+                            listElement(
+                                    title(),
+                                    content(),
+                                    trainImage
+                            )
+                        }
+                    },
+                    compact
+            )
 }
 
 /**
@@ -149,22 +147,19 @@ class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
  */
 class GASearchConnector(context: SearchDef) : SearchConnector(context) {
 
-    override fun sendFirstJourney(sections: List<Section>) {
-        withMessage(
-                gaFlexibleMessageForCarousel(
-                        sections.mapIndexed { i, section ->
-                            with(section) {
-                                carouselItem(
-                                        search,
-                                        title(),
-                                        content(),
-                                        gaImage(trainImage, "train"),
-                                        proposal[i]
-                                )
-                            }
+    override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
+            gaFlexibleMessageForCarousel(
+                    sections.mapIndexed { i, section ->
+                        with(section) {
+                            carouselItem(
+                                    search,
+                                    title(),
+                                    content(),
+                                    gaImage(trainImage, "train"),
+                                    proposal[i]
+                            )
                         }
-                )
-        )
-    }
+                    }
+            )
 }
 
