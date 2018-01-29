@@ -54,13 +54,35 @@ class SearchTest {
 
     @Test
     fun `search story asks for destination WHEN there is no destination in context`() {
+        with(rule.startNewBusMock(story = search)) {
+            firstAnswer.assertText("For which destination?")
+        }
+    }
+
+    @Test
+    fun `search story asks for origin WHEN there is a destination BUT no origin in context`() {
+        with(rule.startNewBusMock(story = search)) {
+            firstAnswer.assertText("For which destination?")
+            destination = mockedDestination
+        }
+        with(rule.startBusMock()) {
+            firstBusAnswer.assertText("For which origin?")
+            origin = mockedOrigin
+        }
+        with(rule.startBusMock()) {
+            firstBusAnswer.assertText("When?")
+        }
+    }
+
+    @Test
+    fun `search story asks for destination WHEN there is no destination in context AND locale is fr`() {
         with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Pour quelle destination?")
         }
     }
 
     @Test
-    fun `search story asks for origin WHEN there is a destination but no origin in context`() {
+    fun `search story asks for origin WHEN there is a destination BUT no origin in context AND locale is fr`() {
         with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
             firstAnswer.assertText("Pour quelle destination?")
             destination = mockedDestination
@@ -75,7 +97,7 @@ class SearchTest {
     }
 
     @Test
-    fun `search story asks for departure date WHEN there is a destination and an origin but no departure date in context`() {
+    fun `search story asks for departure date WHEN there is a destination AND an origin BUT no departure date in context`() {
 
         with(rule.newBusMock(story = search, locale = Locale.FRENCH)) {
             destination = mockedDestination

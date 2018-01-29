@@ -29,7 +29,6 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
 import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.shared.addJacksonConverter
-import fr.vsct.tock.shared.cache.getOrCache
 import fr.vsct.tock.shared.create
 import fr.vsct.tock.shared.jackson.addDeserializer
 import fr.vsct.tock.shared.jackson.addSerializer
@@ -38,7 +37,6 @@ import fr.vsct.tock.shared.retrofitBuilderWithTimeoutAndLogger
 import mu.KotlinLogging
 import okhttp3.Credentials
 import okhttp3.Interceptor
-import org.litote.kmongo.toId
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -76,15 +74,20 @@ object SncfOpenDataClient {
     }
 
     fun places(query: String): List<Place> {
-        return getOrCache(query.toId(), "place") {
-            api.places(query).execute().body()
-        }?.places ?: emptyList()
+        return api.places(query).execute().body()?.places ?: emptyList()
     }
 
     fun bestPlaceMatch(query: String): Place? {
-        val p = places(query).firstOrNull()
+        val p = places(query)/*.sortedByDescending { it.quality }*/.firstOrNull()
         return if (p != null && p.embeddedType != "stop_area") {
-            api.placesNearby(p.id).execute().body()?.places?.firstOrNull()
+            api.placesNearby(p.id)
+                    .execute()
+                    .body()
+                    ?.places
+                    ?.run {
+                        firstOrNull { it.embeddedType == "stop_area" }
+                                ?: firstOrNull()
+                    }
         } else {
             p
         }

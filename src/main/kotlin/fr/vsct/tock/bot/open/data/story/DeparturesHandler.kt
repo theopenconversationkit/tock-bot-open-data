@@ -42,7 +42,7 @@ val departures = storyWithSteps<ScoreboardSteps>(
  */
 object Departures : Scoreboard() {
 
-    override val missingOriginMessage = "What station do you want to see the departures from?"
+    override val missingOriginMessage = "From which station would you like to see the departures?"
 
     override fun newHandlerDefinition(bus: BotBus): ScoreboardDef = DeparturesDef(bus)
 

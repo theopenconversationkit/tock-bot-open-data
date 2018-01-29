@@ -52,6 +52,7 @@ import fr.vsct.tock.bot.open.data.story.ScoreboardDef.ContextKey.startDate
 import fr.vsct.tock.nlp.entity.OrdinalValue
 import fr.vsct.tock.shared.defaultZoneId
 import fr.vsct.tock.translator.by
+import fr.vsct.tock.translator.formatWith
 import fr.vsct.tock.translator.raw
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -249,7 +250,7 @@ class MessengerScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector
                 journey.stopTimes.take(10).map {
                     genericElement(
                             (it.stopPoint?.name ?: "").raw,
-                            it.departureTime?.format(timeFormat)?.raw,
+                            it.departureTime.formatWith(timeFormat, userPreferences.locale),
                             stationImage
                     )
                 }
@@ -286,7 +287,7 @@ class GAScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(contex
                         carouselItem(
                                 SecondaryIntent.select,
                                 (it.stopPoint?.name ?: "").raw,
-                                it.departureTime?.format(timeFormat)?.raw,
+                                it.departureTime.formatWith(timeFormat, userPreferences.locale),
                                 gaImage(stationImage, "station"),
                                 proposal[i]
                         )

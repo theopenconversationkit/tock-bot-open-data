@@ -29,7 +29,7 @@ import java.util.Locale
  */
 object MessageFormat {
 
-    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.FRENCH)
+    val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     val datetimeFormat = object : DateTimeFormatterProvider {
         override fun provide(locale: Locale): DateTimeFormatter {
