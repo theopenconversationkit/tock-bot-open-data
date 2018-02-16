@@ -40,6 +40,7 @@ import fr.vsct.tock.bot.open.data.OpenDataConfiguration.trainImage
 import fr.vsct.tock.bot.open.data.SecondaryIntent
 import fr.vsct.tock.bot.open.data.SecondaryIntent.more_elements
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
+import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient.findPlace
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
@@ -77,11 +78,11 @@ enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
             } else {
                 val stop = displayedStops[ordinal]
                 stop.findVehicleId()
-                        ?.let { SncfOpenDataClient.vehicleJourney(it) }
-                        ?.also {
-                            connector?.displayDetails(it)
-                            end()
-                        }
+                    ?.let { SncfOpenDataClient.vehicleJourney(it) }
+                    ?.also {
+                        connector?.displayDetails(it)
+                        end()
+                    }
                         ?: end("Trip not found")
             }
         }
@@ -110,9 +111,9 @@ abstract class Scoreboard : Handler<ScoreboardDef>() {
 
         //handle next result
         choice(nextResultOrigin)
-                ?.run {
-                    origin = findPlace(this)
-                }
+            ?.run {
+                origin = findPlace(this)
+            }
 
         //check mandatory entities
         if (origin == null) {
@@ -190,17 +191,17 @@ abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus)
             displayedStops = stops.toTypedArray()
 
             stops
-                    .filter { timeFor(it) >= currentDate }
-                    .also { filteredStops ->
-                        if (filteredStops.isEmpty()) {
-                            end("Oops, no more results, sorry :(")
-                        } else {
-                            filteredStops.take(maxProposals).let {
-                                connector?.display(it, nextDate)
-                            }
-                            end()
+                .filter { timeFor(it) >= currentDate }
+                .also { filteredStops ->
+                    if (filteredStops.isEmpty()) {
+                        end("Oops, no more results, sorry :(")
+                    } else {
+                        filteredStops.take(maxProposals).let {
+                            connector?.display(it, nextDate)
                         }
+                        end()
                     }
+                }
         }
     }
 }
@@ -208,14 +209,17 @@ abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus)
 /**
  * Connector specific behaviour.
  */
-sealed class ScoreboardConnector(context: ScoreboardDef)
-    : ConnectorDef<ScoreboardDef>(context) {
+sealed class ScoreboardConnector(context: ScoreboardDef) : ConnectorDef<ScoreboardDef>(context) {
 
     fun ScoreboardDef.subtitle(stop: StationStop): CharSequence = i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
 
-    fun display(trains: List<StationStop>, nextDate: LocalDateTime) = withMessage(connectorDisplay(trains, nextDate).invoke(context))
+    fun display(trains: List<StationStop>, nextDate: LocalDateTime) =
+        withMessage(connectorDisplay(trains, nextDate).invoke(context))
 
-    abstract fun connectorDisplay(trains: List<StationStop>, nextDate: LocalDateTime): ScoreboardDef.() -> ConnectorMessage
+    abstract fun connectorDisplay(
+        trains: List<StationStop>,
+        nextDate: LocalDateTime
+    ): ScoreboardDef.() -> ConnectorMessage
 
     fun displayDetails(journey: VehicleJourney) = withMessage(connectorDisplayDetails(journey).invoke(context))
 
@@ -227,33 +231,36 @@ sealed class ScoreboardConnector(context: ScoreboardDef)
  */
 class MessengerScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(context) {
 
-    override fun connectorDisplay(trains: List<StationStop>, nextDate: LocalDateTime): ScoreboardDef.() -> ConnectorMessage = {
+    override fun connectorDisplay(
+        trains: List<StationStop>,
+        nextDate: LocalDateTime
+    ): ScoreboardDef.() -> ConnectorMessage = {
         genericTemplate(
-                trains.map {
-                    genericElement(
-                            itemTitle(it),
-                            subtitle(it),
-                            trainImage
-                    )
-                },
-                quickReply(
-                        nextMessage,
-                        more_elements,
-                        parameters =
-                        nextResultDate[nextDate] + nextResultOrigin[o.name]
+            trains.map {
+                genericElement(
+                    itemTitle(it),
+                    subtitle(it),
+                    trainImage
                 )
+            },
+            quickReply(
+                nextMessage,
+                more_elements,
+                parameters =
+                nextResultDate[nextDate] + nextResultOrigin[o.name]
+            )
         )
     }
 
     override fun connectorDisplayDetails(journey: VehicleJourney): ScoreboardDef.() -> ConnectorMessage = {
         genericTemplate(
-                journey.stopTimes.take(10).map {
-                    genericElement(
-                            (it.stopPoint?.name ?: "").raw,
-                            it.departureTime.formatWith(timeFormat, userPreferences.locale),
-                            stationImage
-                    )
-                }
+            journey.stopTimes.take(10).map {
+                genericElement(
+                    (it.stopPoint?.name ?: "").raw,
+                    it.departureTime.formatWith(timeFormat, userPreferences.locale),
+                    stationImage
+                )
+            }
         )
     }
 }
@@ -263,36 +270,39 @@ class MessengerScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector
  */
 class GAScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(context) {
 
-    override fun connectorDisplay(trains: List<StationStop>, nextDate: LocalDateTime): ScoreboardDef.() -> ConnectorMessage = {
+    override fun connectorDisplay(
+        trains: List<StationStop>,
+        nextDate: LocalDateTime
+    ): ScoreboardDef.() -> ConnectorMessage = {
         gaFlexibleMessageForCarousel(
-                trains.mapIndexed { i, it ->
-                    with(it) {
-                        carouselItem(
-                                intent!!,
-                                itemTitle(it),
-                                subtitle(it),
-                                gaImage(trainImage, "train"),
-                                proposal[i]
-                        )
-                    }
-                },
-                listOf(nextMessage)
+            trains.mapIndexed { i, it ->
+                with(it) {
+                    carouselItem(
+                        intent!!,
+                        itemTitle(it),
+                        subtitle(it),
+                        gaImage(trainImage, "train"),
+                        proposal[i]
+                    )
+                }
+            },
+            listOf(nextMessage)
         )
     }
 
     override fun connectorDisplayDetails(journey: VehicleJourney): ScoreboardDef.() -> ConnectorMessage = {
         gaFlexibleMessageForCarousel(
-                journey.stopTimes.take(10).mapIndexed { i, it ->
-                    with(it) {
-                        carouselItem(
-                                SecondaryIntent.select,
-                                (it.stopPoint?.name ?: "").raw,
-                                it.departureTime.formatWith(timeFormat, userPreferences.locale),
-                                gaImage(stationImage, "station"),
-                                proposal[i]
-                        )
-                    }
+            journey.stopTimes.take(10).mapIndexed { i, it ->
+                with(it) {
+                    carouselItem(
+                        SecondaryIntent.select,
+                        (it.stopPoint?.name ?: "").raw,
+                        it.departureTime.formatWith(timeFormat, userPreferences.locale),
+                        gaImage(stationImage, "station"),
+                        proposal[i]
+                    )
                 }
+            }
         )
     }
 

@@ -20,16 +20,11 @@
 package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.engine.dialog.ContextValue
-import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
-import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient.findPlaceValue
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.departureDateEntity
 import fr.vsct.tock.bot.open.data.destinationEntity
-import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.bot.open.data.locationEntity
 import fr.vsct.tock.bot.open.data.originEntity
-import fr.vsct.tock.nlp.api.client.model.Entity
 import fr.vsct.tock.nlp.entity.date.DateEntityRange
 import fr.vsct.tock.shared.defaultZoneId
 import java.time.LocalDateTime
@@ -38,16 +33,16 @@ import java.time.LocalDateTime
  * entity values
  */
 var BotBus.origin: Place?
-    get() = place(originEntity)
-    set(value) = setPlace(originEntity, value)
+    get() = entityValue(originEntity)
+    set(value) = changeEntityValue(originEntity, value)
 
 var BotBus.location: Place?
-    get() = place(locationEntity)
-    set(value) = setPlace(locationEntity, value)
+    get() = entityValue(locationEntity)
+    set(value) = changeEntityValue(locationEntity, value)
 
 var BotBus.destination: Place?
-    get() = place(destinationEntity)
-    set(value) = setPlace(destinationEntity, value)
+    get() = entityValue(destinationEntity)
+    set(value) = changeEntityValue(destinationEntity, value)
 
 
 val BotBus.departureDate: LocalDateTime?
@@ -56,24 +51,6 @@ val BotBus.departureDate: LocalDateTime?
 fun BotBus.returnsAndRemoveLocation(): Place? {
     return location.apply {
         removeEntityValue(locationEntity)
-    }
-}
-
-fun findPlace(name: String): Place? {
-    return findPlaceValue(name)?.place
-}
-
-private fun BotBus.place(entity: Entity): Place? = entityValue(entity, ::placeValue)?.place
-
-private fun BotBus.setPlace(entity: Entity, place: Place?) = changeEntityValue(entity, place?.let { PlaceValue(place) })
-
-private fun placeValue(context: ContextValue): PlaceValue? {
-    return with(context) {
-        if (evaluated && value is PlaceValue) {
-            value as PlaceValue
-        } else {
-            null
-        }
     }
 }
 

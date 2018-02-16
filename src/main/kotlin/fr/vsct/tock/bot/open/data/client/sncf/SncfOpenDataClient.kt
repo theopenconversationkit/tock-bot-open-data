@@ -27,7 +27,6 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
-import fr.vsct.tock.bot.open.data.entity.PlaceValue
 import fr.vsct.tock.shared.addJacksonConverter
 import fr.vsct.tock.shared.create
 import fr.vsct.tock.shared.jackson.addDeserializer
@@ -50,27 +49,31 @@ object SncfOpenDataClient {
     private val dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
 
     private val api: SncfOpenDataApi =
-            retrofitBuilderWithTimeoutAndLogger(
-                    30000,
-                    logger,
-                    interceptors = listOf(Interceptor { chain ->
-                        chain.proceed(chain.request()
-                                .newBuilder()
-                                .header("Authorization", Credentials.basic(OpenDataConfiguration.sncfApiUser, ""))
-                                .build())
-                    }))
-                    .baseUrl("https://api.sncf.com/v1/coverage/sncf/")
-                    .addJacksonConverter(mapper.copy().registerModule(SimpleModule()
-                            .addDeserializer(LocalDateTime::class, LocalDateTimeDeserializer(dateFormat))
-                            .addSerializer(LocalDateTime::class, LocalDateTimeSerializer(dateFormat))
-                    ))
-                    .build()
-                    .create()
+        retrofitBuilderWithTimeoutAndLogger(
+            30000,
+            logger,
+            interceptors = listOf(Interceptor { chain ->
+                chain.proceed(
+                    chain.request()
+                        .newBuilder()
+                        .header("Authorization", Credentials.basic(OpenDataConfiguration.sncfApiUser, ""))
+                        .build()
+                )
+            })
+        )
+            .baseUrl("https://api.sncf.com/v1/coverage/sncf/")
+            .addJacksonConverter(
+                mapper.copy().registerModule(
+                    SimpleModule()
+                        .addDeserializer(LocalDateTime::class, LocalDateTimeDeserializer(dateFormat))
+                        .addSerializer(LocalDateTime::class, LocalDateTimeSerializer(dateFormat))
+                )
+            )
+            .build()
+            .create()
 
-    fun findPlaceValue(name: String): PlaceValue? {
-        return bestPlaceMatch(name)?.let {
-            PlaceValue(it)
-        }
+    fun findPlace(name: String): Place? {
+        return bestPlaceMatch(name)
     }
 
     fun places(query: String): List<Place> {
@@ -81,13 +84,13 @@ object SncfOpenDataClient {
         val p = places(query)/*.sortedByDescending { it.quality }*/.firstOrNull()
         return if (p != null && p.embeddedType != "stop_area") {
             api.placesNearby(p.id)
-                    .execute()
-                    .body()
-                    ?.places
-                    ?.run {
-                        firstOrNull { it.embeddedType == "stop_area" }
-                                ?: firstOrNull()
-                    }
+                .execute()
+                .body()
+                ?.places
+                ?.run {
+                    firstOrNull { it.embeddedType == "stop_area" }
+                            ?: firstOrNull()
+                }
         } else {
             p
         }
@@ -99,19 +102,19 @@ object SncfOpenDataClient {
 
     fun departures(from: Place, datetime: LocalDateTime): List<StationStop> {
         return api
-                .departures(from.id, dateFormat.format(datetime))
-                .execute()
-                .body()
-                ?.departures
+            .departures(from.id, dateFormat.format(datetime))
+            .execute()
+            .body()
+            ?.departures
                 ?: emptyList()
     }
 
     fun arrivals(from: Place, datetime: LocalDateTime): List<StationStop> {
         return api
-                .arrivals(from.id, dateFormat.format(datetime))
-                .execute()
-                .body()
-                ?.arrivals
+            .arrivals(from.id, dateFormat.format(datetime))
+            .execute()
+            .body()
+            ?.arrivals
                 ?: emptyList()
     }
 

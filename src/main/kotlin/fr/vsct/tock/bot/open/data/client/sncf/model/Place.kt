@@ -20,6 +20,7 @@
 package fr.vsct.tock.bot.open.data.client.sncf.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import fr.vsct.tock.nlp.entity.Value
 
 /**
  *
@@ -33,7 +34,7 @@ data class Place(
         val id: String,
         @JsonProperty("coord")
         val coordinates: Coordinates?
-) {
+) : Value {
 
     override fun toString(): String {
         return name
