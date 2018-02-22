@@ -21,6 +21,7 @@ package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.engine.BotBus
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
 import fr.vsct.tock.bot.open.data.departureDateEntity
 import fr.vsct.tock.bot.open.data.destinationEntity
 import fr.vsct.tock.bot.open.data.locationEntity
@@ -32,15 +33,15 @@ import java.time.LocalDateTime
 /**
  * entity values
  */
-var BotBus.origin: Place?
+var BotBus.origin: PlaceValue?
     get() = entityValue(originEntity)
     set(value) = changeEntityValue(originEntity, value)
 
-var BotBus.location: Place?
+var BotBus.location: PlaceValue?
     get() = entityValue(locationEntity)
     set(value) = changeEntityValue(locationEntity, value)
 
-var BotBus.destination: Place?
+var BotBus.destination: PlaceValue?
     get() = entityValue(destinationEntity)
     set(value) = changeEntityValue(destinationEntity, value)
 
@@ -48,7 +49,7 @@ var BotBus.destination: Place?
 val BotBus.departureDate: LocalDateTime?
     get() = entityValue<DateEntityRange>(departureDateEntity)?.start()?.withZoneSameInstant(defaultZoneId)?.toLocalDateTime()
 
-fun BotBus.returnsAndRemoveLocation(): Place? {
+fun BotBus.returnsAndRemoveLocation(): PlaceValue? {
     return location.apply {
         removeEntityValue(locationEntity)
     }

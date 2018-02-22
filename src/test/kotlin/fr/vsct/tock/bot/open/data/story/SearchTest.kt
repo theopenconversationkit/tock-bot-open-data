@@ -21,7 +21,8 @@ package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.model.Coordinates
-import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
+import fr.vsct.tock.bot.open.data.client.sncf.model.SncfPlace
 import fr.vsct.tock.bot.open.data.rule.OpenDataRule
 import org.junit.Rule
 import org.junit.Test
@@ -36,21 +37,27 @@ class SearchTest {
     @JvmField
     val rule = OpenDataRule()
 
-    val mockedDestination = Place(
+    val mockedDestination = PlaceValue(
+        SncfPlace(
             "stop_area",
             90,
             "Lille Europe",
             "Lille Europe (Lille)",
             "stop_area:OCE:SA:87223263",
-            Coordinates(50.638861, 3.075774))
+            Coordinates(50.638861, 3.075774)
+        )
+    )
 
-    val mockedOrigin = Place(
+    val mockedOrigin = PlaceValue(
+        SncfPlace(
             "stop_area",
             90,
             "Lille Europe",
             "Lille Europe (Lille)",
             "stop_area:OCE:SA:87223263",
-            Coordinates(50.638861, 3.075774))
+            Coordinates(50.638861, 3.075774)
+        )
+    )
 
     @Test
     fun `search story asks for destination WHEN there is no destination in context`() {

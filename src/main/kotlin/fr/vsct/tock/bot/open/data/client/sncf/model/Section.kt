@@ -26,8 +26,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
  */
 data class Section(
         val type: String,
-        val from: Place?,
-        val to: Place?,
+        val from: SncfPlace?,
+        val to: SncfPlace?,
         @JsonProperty("stop_date_times")
         val stopDateTimes: List<StopDateTime> = emptyList()) {
 }

@@ -25,5 +25,5 @@ import com.fasterxml.jackson.annotation.JsonProperty
  *
  */
 data class PlacesNearbyResponse(
-        @get:JsonProperty("places_nearby") val places:List<Place> = emptyList()) {
+        @get:JsonProperty("places_nearby") val places:List<SncfPlace> = emptyList()) {
 }

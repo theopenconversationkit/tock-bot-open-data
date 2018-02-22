@@ -19,24 +19,15 @@
 
 package fr.vsct.tock.bot.open.data.client.sncf.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import fr.vsct.tock.nlp.entity.Value
-
 /**
  *
  */
-data class Place(
-        @JsonProperty("embedded_type")
-        val embeddedType: String,
-        val quality: Int,
-        val name: String,
-        val label: String?,
-        val id: String,
-        @JsonProperty("coord")
-        val coordinates: Coordinates?
-) : Value {
+interface Place {
 
-    override fun toString(): String {
-        return name
-    }
+    val embeddedType: String
+    val quality: Int
+    val name: String
+    val label: String?
+    val id: String
+    val coordinates: Coordinates?
 }

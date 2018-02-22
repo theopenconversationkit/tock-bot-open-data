@@ -25,6 +25,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import fr.vsct.tock.bot.open.data.OpenDataConfiguration
 import fr.vsct.tock.bot.open.data.client.sncf.model.Journey
 import fr.vsct.tock.bot.open.data.client.sncf.model.Place
+import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
+import fr.vsct.tock.bot.open.data.client.sncf.model.SncfPlace
 import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import fr.vsct.tock.bot.open.data.client.sncf.model.VehicleJourney
 import fr.vsct.tock.shared.addJacksonConverter
@@ -72,15 +74,15 @@ object SncfOpenDataClient {
             .build()
             .create()
 
-    fun findPlace(name: String): Place? {
-        return bestPlaceMatch(name)
+    fun findPlace(name: String): PlaceValue? {
+        return bestPlaceMatch(name)?.let { PlaceValue(it) }
     }
 
-    fun places(query: String): List<Place> {
+    fun places(query: String): List<SncfPlace> {
         return api.places(query).execute().body()?.places ?: emptyList()
     }
 
-    fun bestPlaceMatch(query: String): Place? {
+    fun bestPlaceMatch(query: String): SncfPlace? {
         val p = places(query)/*.sortedByDescending { it.quality }*/.firstOrNull()
         return if (p != null && p.embeddedType != "stop_area") {
             api.placesNearby(p.id)
