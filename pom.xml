@@ -33,7 +33,7 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>1.2.21</kotlin>
+        <kotlin>1.2.30</kotlin>
         <tock>0.9.1-SNAPSHOT</tock>
         <guava>24.0-jre</guava>
 
@@ -44,7 +44,7 @@
         <plugin.release>2.5.3</plugin.release>
         <plugin.gpg>1.6</plugin.gpg>
         <plugin.nexus-staging>1.6.8</plugin.nexus-staging>
-        <plugin.dokka.version>0.9.15</plugin.dokka.version>
+        <plugin.dokka.version>0.9.16</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     </properties>
