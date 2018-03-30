@@ -22,8 +22,10 @@ package fr.vsct.tock.bot.open.data
 import fr.vsct.tock.bot.engine.BotRepository
 import fr.vsct.tock.bot.importI18nDump
 import fr.vsct.tock.bot.importNlpDump
+import fr.vsct.tock.bot.open.data.AlexaConfiguration.registerAlexaConnector
 import fr.vsct.tock.bot.open.data.GoogleAssistantConfiguration.registerGoogleAssistantConnector
 import fr.vsct.tock.bot.open.data.MessengerConfiguration.registerMessengerConnector
+import fr.vsct.tock.bot.open.data.SlackConfiguration.registerSlackConnector
 import fr.vsct.tock.bot.registerAndInstallBot
 
 fun main(args: Array<String>) {
@@ -41,6 +43,8 @@ object Start {
 
         registerMessengerConnector()
         registerGoogleAssistantConnector()
+        registerSlackConnector()
+        registerAlexaConnector()
 
         //add evaluation for [PlaceValue] after nlp response
         BotRepository.registerNlpListener(OpenDataNlpListener)

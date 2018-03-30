@@ -19,14 +19,14 @@
 
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
+import fr.vsct.tock.bot.connector.alexa.addAlexaConnector
 
 /**
  *
  */
-object GoogleAssistantConfiguration {
+object AlexaConfiguration {
 
-    fun registerGoogleAssistantConnector() {
-        openBot.addGoogleAssistantConnector()
+    fun registerAlexaConnector() {
+        openBot.addAlexaConnector()
     }
 }

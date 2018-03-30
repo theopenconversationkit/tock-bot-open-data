@@ -19,14 +19,31 @@
 
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.connector.ga.addGoogleAssistantConnector
+import fr.vsct.tock.bot.connector.slack.addSlackConnector
+import fr.vsct.tock.shared.property
 
 /**
  *
  */
-object GoogleAssistantConfiguration {
+object SlackConfiguration {
 
-    fun registerGoogleAssistantConnector() {
-        openBot.addGoogleAssistantConnector()
+    /**
+     * The slack token1.
+     */
+    private val token1: String = property("tock_bot_open_data_slack_token1", "Please specify token1 for slack")
+
+    /**
+     * The slack token2.
+     */
+    private val token2: String = property("tock_bot_open_data_slack_token2", "Please specify token2 for slack")
+
+    /**
+     * The slack token3.
+     */
+    private val token3: String = property("tock_bot_open_data_slack_token3", "Please specify token3 for slack")
+
+
+    fun registerSlackConnector() {
+        openBot.addSlackConnector(token1, token2, token3)
     }
 }
