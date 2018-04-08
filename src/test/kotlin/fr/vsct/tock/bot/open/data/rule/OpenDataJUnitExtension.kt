@@ -25,13 +25,14 @@ import com.github.salomonbrys.kodein.provider
 import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.test.TestContext
 import fr.vsct.tock.bot.test.junit.TockJUnit4Rule
+import fr.vsct.tock.bot.test.junit.TockJUnit5Extension
 import fr.vsct.tock.translator.TranslatorEngine
 import testTranslatorModule
 
 /**
  *
  */
-class OpenDataRule : TockJUnit4Rule<TestContext>(openBot) {
+class OpenDataJUnitExtension : TockJUnit5Extension<TestContext>(openBot) {
 
     init {
         testTranslatorModule = Kodein.Module {

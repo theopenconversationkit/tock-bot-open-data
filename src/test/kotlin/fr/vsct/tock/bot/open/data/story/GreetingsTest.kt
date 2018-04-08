@@ -23,19 +23,20 @@ import fr.vsct.tock.bot.connector.ga.gaConnectorType
 import fr.vsct.tock.bot.connector.ga.gaMessage
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
-import fr.vsct.tock.bot.open.data.rule.OpenDataRule
-import org.junit.Rule
-import org.junit.Test
+import fr.vsct.tock.bot.open.data.rule.OpenDataJUnitExtension
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 import java.util.Locale
 
 /**
  *
  */
+
 class GreetingsTest {
 
-    @Rule
+    @RegisterExtension
     @JvmField
-    val rule = OpenDataRule()
+    val rule = OpenDataJUnitExtension()
 
     @Test
     fun `greetings story displays welcome message`() {
@@ -49,12 +50,12 @@ class GreetingsTest {
     fun `greetings story displays welcome message with Messenger dedicated message`() {
         with(rule.startNewBusMock()) {
             lastAnswer.assertMessage(
-                    buttonsTemplate(
-                            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                            postbackButton("Itineraries", search),
-                            postbackButton("Departures", Departures),
-                            postbackButton("Arrivals", Arrivals)
-                    )
+                buttonsTemplate(
+                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                    postbackButton("Itineraries", search),
+                    postbackButton("Departures", Departures),
+                    postbackButton("Arrivals", Arrivals)
+                )
             )
         }
     }
@@ -65,12 +66,12 @@ class GreetingsTest {
             firstAnswer.assertText("Welcome to the Tock Open Data Bot! :)")
             secondAnswer.assertText("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
-                    gaMessage(
-                            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                            "Itineraries",
-                            "Departures",
-                            "Arrivals"
-                    )
+                gaMessage(
+                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                    "Itineraries",
+                    "Departures",
+                    "Arrivals"
+                )
             )
         }
     }
@@ -89,12 +90,12 @@ class GreetingsTest {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
-                    buttonsTemplate(
-                            "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :)",
-                            postbackButton("Itinéraires", search),
-                            postbackButton("Départs", Departures),
-                            postbackButton("Arrivées", Arrivals)
-                    )
+                buttonsTemplate(
+                    "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :)",
+                    postbackButton("Itinéraires", search),
+                    postbackButton("Départs", Departures),
+                    postbackButton("Arrivées", Arrivals)
+                )
             )
         }
     }
@@ -105,11 +106,12 @@ class GreetingsTest {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
-                    gaMessage(
-                            "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :)",
-                            "Itinéraires",
-                            "Départs",
-                            "Arrivées")
+                gaMessage(
+                    "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :)",
+                    "Itinéraires",
+                    "Départs",
+                    "Arrivées"
+                )
             )
         }
     }

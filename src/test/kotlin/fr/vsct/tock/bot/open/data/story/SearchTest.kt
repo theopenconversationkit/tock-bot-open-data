@@ -23,9 +23,9 @@ import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.model.Coordinates
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
 import fr.vsct.tock.bot.open.data.client.sncf.model.SncfPlace
-import fr.vsct.tock.bot.open.data.rule.OpenDataRule
-import org.junit.Rule
-import org.junit.Test
+import fr.vsct.tock.bot.open.data.rule.OpenDataJUnitExtension
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 import java.util.Locale
 
 /**
@@ -33,11 +33,11 @@ import java.util.Locale
  */
 class SearchTest {
 
-    @Rule
+    @RegisterExtension
     @JvmField
-    val rule = OpenDataRule()
+    val rule = OpenDataJUnitExtension()
 
-    val mockedDestination = PlaceValue(
+    private val mockedDestination = PlaceValue(
         SncfPlace(
             "stop_area",
             90,
@@ -48,7 +48,7 @@ class SearchTest {
         )
     )
 
-    val mockedOrigin = PlaceValue(
+    private val mockedOrigin = PlaceValue(
         SncfPlace(
             "stop_area",
             90,

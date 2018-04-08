@@ -33,13 +33,15 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>1.2.30</kotlin>
+        <kotlin>1.2.31</kotlin>
         <tock>0.9.4-SNAPSHOT</tock>
-        <guava>24.0-jre</guava>
+        <guava>24.1-jre</guava>
 
-        <junit>4.12</junit>
+        <junit-platform>1.1.0</junit-platform>
+        <junit-jupiter>5.1.1</junit-jupiter>
+        <mockk>1.7.15</mockk>
 
-        <plugin.surefire>2.20.1</plugin.surefire>
+        <plugin.surefire>2.19.1</plugin.surefire>
         <plugin.source>3.0.1</plugin.source>
         <plugin.release>2.5.3</plugin.release>
         <plugin.gpg>1.6</plugin.gpg>
@@ -57,28 +59,39 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.vsct.tock</groupId>
-            <artifactId>bot-test</artifactId>
-            <version>${tock}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava}</version>
         </dependency>
 
         <dependency>
+            <groupId>fr.vsct.tock</groupId>
+            <artifactId>bot-test</artifactId>
+            <version>${tock}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
+            <artifactId>kotlin-test</artifactId>
             <version>${kotlin}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit}</version>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -114,6 +127,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${plugin.surefire}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>${junit-platform}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <includes>
                         <include>**/*Test.*</include>
@@ -123,7 +143,6 @@
                     <excludes>
                         <exclude>**/*IntegrationTest.*</exclude>
                     </excludes>
-
                 </configuration>
             </plugin>
             <plugin>

@@ -19,10 +19,10 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.Locale
+import kotlin.test.assertEquals
 
 /**
  *

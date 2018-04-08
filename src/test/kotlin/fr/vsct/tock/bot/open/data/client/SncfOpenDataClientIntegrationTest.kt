@@ -20,7 +20,7 @@
 package fr.vsct.tock.bot.open.data.client
 
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 /**
@@ -42,7 +42,7 @@ class SncfOpenDataClientIntegrationTest {
         SncfOpenDataClient.bestPlaceMatch("Versailles").let { versailles ->
             SncfOpenDataClient.bestPlaceMatch("Nantes").let { nantes ->
                 println(SncfOpenDataClient.journey(versailles!!, nantes!!, LocalDateTime.now().plusDays(1))
-                        .map { it.copy(sections = it.sections.filter { it.type == "public_transport" }) })
+                    .map { it.copy(sections = it.sections.filter { it.type == "public_transport" }) })
             }
         }
     }
