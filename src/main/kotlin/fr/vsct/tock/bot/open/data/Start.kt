@@ -27,6 +27,7 @@ import fr.vsct.tock.bot.open.data.GoogleAssistantConfiguration.registerGoogleAss
 import fr.vsct.tock.bot.open.data.MessengerConfiguration.registerMessengerConnector
 import fr.vsct.tock.bot.open.data.SlackConfiguration.registerSlackConnector
 import fr.vsct.tock.bot.registerAndInstallBot
+import fr.vsct.tock.translator.Translator
 
 fun main(args: Array<String>) {
     Start.start()
@@ -40,6 +41,8 @@ object Start {
     fun start() {
         //set default zone id, these are french trains, so...
         System.setProperty("tock_default_zone", "Europe/Paris")
+        //enable i18n as two locales are supported
+        Translator.enabled = true
 
         registerMessengerConnector()
         registerGoogleAssistantConnector()

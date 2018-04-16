@@ -26,6 +26,7 @@ import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.test.TestContext
 import fr.vsct.tock.bot.test.junit.TockJUnit4Rule
 import fr.vsct.tock.bot.test.junit.TockJUnit5Extension
+import fr.vsct.tock.translator.Translator
 import fr.vsct.tock.translator.TranslatorEngine
 import testTranslatorModule
 
@@ -35,6 +36,7 @@ import testTranslatorModule
 class OpenDataJUnitExtension : TockJUnit5Extension<TestContext>(openBot) {
 
     init {
+        Translator.enabled = true
         testTranslatorModule = Kodein.Module {
             bind<TranslatorEngine>() with provider { TranslatorEngineMock }
         }
