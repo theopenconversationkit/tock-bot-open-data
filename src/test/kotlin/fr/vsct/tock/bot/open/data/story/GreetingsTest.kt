@@ -36,11 +36,11 @@ class GreetingsTest {
 
     @RegisterExtension
     @JvmField
-    val rule = OpenDataJUnitExtension()
+    val ext = OpenDataJUnitExtension()
 
     @Test
     fun `greetings story displays welcome message`() {
-        with(rule.startNewBusMock()) {
+        ext.send {
             firstAnswer.assertText("Welcome to the Tock Open Data Bot! :)")
             secondAnswer.assertText("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
         }
@@ -48,7 +48,7 @@ class GreetingsTest {
 
     @Test
     fun `greetings story displays welcome message with Messenger dedicated message`() {
-        with(rule.startNewBusMock()) {
+        ext.send {
             lastAnswer.assertMessage(
                 buttonsTemplate(
                     "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
@@ -62,7 +62,7 @@ class GreetingsTest {
 
     @Test
     fun `greetings story displays welcome message with GA dedicated message WHEN context contains GA connector`() {
-        with(rule.startNewBusMock(connectorType = gaConnectorType)) {
+        ext.send(connectorType = gaConnectorType) {
             firstAnswer.assertText("Welcome to the Tock Open Data Bot! :)")
             secondAnswer.assertText("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
@@ -78,7 +78,7 @@ class GreetingsTest {
 
     @Test
     fun `greetings story displays welcome message WHEN locale is fr`() {
-        with(rule.startNewBusMock(locale = Locale.FRENCH)) {
+        ext.send(locale = Locale.FRENCH) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
         }
@@ -86,7 +86,7 @@ class GreetingsTest {
 
     @Test
     fun `greetings story displays welcome message with Messenger dedicated message WHEN context contains Messenger connector and fr locale`() {
-        with(rule.startNewBusMock(locale = Locale.FRENCH)) {
+        ext.send(locale = Locale.FRENCH) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(
@@ -102,7 +102,7 @@ class GreetingsTest {
 
     @Test
     fun `greetings story displays welcome message with GA dedicated message WHEN context contains GA connector AND fr locale`() {
-        with(rule.startNewBusMock(connectorType = gaConnectorType, locale = Locale.FRENCH)) {
+        ext.send(connectorType = gaConnectorType, locale = Locale.FRENCH) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
             secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock")
             lastAnswer.assertMessage(

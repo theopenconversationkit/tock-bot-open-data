@@ -33,7 +33,7 @@ import testTranslatorModule
 /**
  *
  */
-class OpenDataJUnitExtension : TockJUnit5Extension<TestContext>(openBot) {
+class OpenDataJUnitExtension : TockJUnit5Extension(openBot) {
 
     init {
         Translator.enabled = true

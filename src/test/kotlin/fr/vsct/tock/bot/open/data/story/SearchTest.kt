@@ -19,10 +19,12 @@
 
 package fr.vsct.tock.bot.open.data.story
 
+import fr.vsct.tock.bot.engine.dialog.set
 import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.model.Coordinates
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
 import fr.vsct.tock.bot.open.data.client.sncf.model.SncfPlace
+import fr.vsct.tock.bot.open.data.locationEntity
 import fr.vsct.tock.bot.open.data.rule.OpenDataJUnitExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -35,9 +37,9 @@ class SearchTest {
 
     @RegisterExtension
     @JvmField
-    val rule = OpenDataJUnitExtension()
+    val ext = OpenDataJUnitExtension()
 
-    private val mockedDestination = PlaceValue(
+    private val lille = PlaceValue(
         SncfPlace(
             "stop_area",
             90,
@@ -47,58 +49,53 @@ class SearchTest {
             Coordinates(50.638861, 3.075774)
         )
     )
-
-    private val mockedOrigin = PlaceValue(
+    private val paris = PlaceValue(
         SncfPlace(
-            "stop_area",
+            "administrative_region",
             90,
-            "Lille Europe",
-            "Lille Europe (Lille)",
-            "stop_area:OCE:SA:87223263",
-            Coordinates(50.638861, 3.075774)
+            "Paris",
+            "Paris (75001-75116)",
+            "admin:fr:75056",
+            Coordinates(48.856609, 2.351499)
         )
     )
 
     @Test
     fun `search story asks for destination WHEN there is no destination in context`() {
-        with(rule.startNewBusMock(story = search)) {
+        ext.send(intent = search) {
             firstAnswer.assertText("For which destination?")
         }
     }
 
     @Test
     fun `search story asks for origin WHEN there is a destination BUT no origin in context`() {
-        with(rule.startNewBusMock(story = search)) {
+        ext.send("I would like to find a train", search) {
             firstAnswer.assertText("For which destination?")
-            destination = mockedDestination
         }
-        with(rule.startBusMock()) {
+        ext.send("Lille", indicate_location, locationEntity set lille) {
             firstBusAnswer.assertText("For which origin?")
-            origin = mockedOrigin
         }
-        with(rule.startBusMock()) {
+        ext.send("Paris", indicate_location, locationEntity set paris) {
             firstBusAnswer.assertText("When?")
         }
     }
 
     @Test
     fun `search story asks for destination WHEN there is no destination in context AND locale is fr`() {
-        with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
+        ext.send(intent = search, locale = Locale.FRENCH) {
             firstAnswer.assertText("Pour quelle destination?")
         }
     }
 
     @Test
     fun `search story asks for origin WHEN there is a destination BUT no origin in context AND locale is fr`() {
-        with(rule.startNewBusMock(story = search, locale = Locale.FRENCH)) {
+        ext.send("Je voudrais rechercher un itinéraire", search, locale = Locale.FRENCH) {
             firstAnswer.assertText("Pour quelle destination?")
-            destination = mockedDestination
         }
-        with(rule.startBusMock()) {
+        ext.send("Lille", indicate_location, locationEntity set lille) {
             firstBusAnswer.assertText("Pour quelle origine?")
-            origin = mockedOrigin
         }
-        with(rule.startBusMock()) {
+        ext.send("Paris", indicate_location, locationEntity set paris) {
             firstBusAnswer.assertText("Quand souhaitez-vous partir?")
         }
     }
@@ -106,10 +103,9 @@ class SearchTest {
     @Test
     fun `search story asks for departure date WHEN there is a destination AND an origin BUT no departure date in context`() {
 
-        with(rule.newBusMock(story = search, locale = Locale.FRENCH)) {
-            destination = mockedDestination
-            intent = indicate_location
-            location = mockedOrigin
+        ext.newRequest("Recherche", search, locale = Locale.FRENCH) {
+            destination = lille
+            origin = paris
 
             run()
 
