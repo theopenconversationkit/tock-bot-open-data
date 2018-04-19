@@ -19,7 +19,7 @@
 
 package fr.vsct.tock.bot.open.data.story
 
-import fr.vsct.tock.bot.engine.dialog.set
+import fr.vsct.tock.bot.engine.dialog.setTo
 import fr.vsct.tock.bot.open.data.SecondaryIntent.indicate_location
 import fr.vsct.tock.bot.open.data.client.sncf.model.Coordinates
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
@@ -72,10 +72,10 @@ class SearchTest {
         ext.send("I would like to find a train", search) {
             firstAnswer.assertText("For which destination?")
         }
-        ext.send("Lille", indicate_location, locationEntity set lille) {
+        ext.send("Lille", indicate_location, locationEntity setTo lille) {
             firstBusAnswer.assertText("For which origin?")
         }
-        ext.send("Paris", indicate_location, locationEntity set paris) {
+        ext.send("Paris", indicate_location, locationEntity setTo paris) {
             firstBusAnswer.assertText("When?")
         }
     }
@@ -92,10 +92,10 @@ class SearchTest {
         ext.send("Je voudrais rechercher un itinéraire", search, locale = Locale.FRENCH) {
             firstAnswer.assertText("Pour quelle destination?")
         }
-        ext.send("Lille", indicate_location, locationEntity set lille) {
+        ext.send("Lille", indicate_location, locationEntity setTo lille) {
             firstBusAnswer.assertText("Pour quelle origine?")
         }
-        ext.send("Paris", indicate_location, locationEntity set paris) {
+        ext.send("Paris", indicate_location, locationEntity setTo paris) {
             firstBusAnswer.assertText("Quand souhaitez-vous partir?")
         }
     }
