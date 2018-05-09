@@ -31,16 +31,16 @@ import fr.vsct.tock.bot.open.data.story.search
  * The bot definition.
  */
 val openBot = bot(
-        "bot_open_data",
-        stories =
-        listOf(
-                greetings,
-                departures,
-                arrivals,
-                search,
-                changeLanguage
-        ),
-        hello = greetings
+    "bot_open_data",
+    stories =
+    listOf(
+        greetings,
+        departures,
+        arrivals,
+        search,
+        changeLanguage
+    ),
+    hello = greetings
 )
 
 /**

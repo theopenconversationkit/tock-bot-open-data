@@ -20,7 +20,6 @@
 package fr.vsct.tock.bot.open.data.story
 
 import fr.vsct.tock.bot.engine.BotBus
-import fr.vsct.tock.bot.open.data.client.sncf.model.Place
 import fr.vsct.tock.bot.open.data.client.sncf.model.PlaceValue
 import fr.vsct.tock.bot.open.data.departureDateEntity
 import fr.vsct.tock.bot.open.data.destinationEntity

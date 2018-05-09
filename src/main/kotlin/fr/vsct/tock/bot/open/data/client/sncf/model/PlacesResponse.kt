@@ -22,5 +22,5 @@ package fr.vsct.tock.bot.open.data.client.sncf.model
 /**
  *
  */
-data class PlacesResponse(val places:List<SncfPlace> = emptyList()) {
+data class PlacesResponse(val places: List<SncfPlace> = emptyList()) {
 }

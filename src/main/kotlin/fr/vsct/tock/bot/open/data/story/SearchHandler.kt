@@ -50,9 +50,10 @@ import java.time.LocalDateTime
  * The search intent handler.
  */
 val search = storyDef<SearchDef>(
-        "search",
-        setOf(indicate_origin),
-        setOf(indicate_location)) {
+    "search",
+    setOf(indicate_origin),
+    setOf(indicate_location)
+) {
     //handle generic location intent
     if (isIntent(indicate_location) && location != null) {
         if (destination == null || origin != null) {
@@ -103,17 +104,16 @@ class SearchDef(bus: BotBus) : HandlerDef<SearchConnector>(bus) {
 /**
  * Connector specific behaviour.
  */
-sealed class SearchConnector(context: SearchDef)
-    : ConnectorDef<SearchDef>(context) {
+sealed class SearchConnector(context: SearchDef) : ConnectorDef<SearchDef>(context) {
 
     fun Section.title(): CharSequence = i18n("{0} - {1}", from, to)
 
     fun Section.content(): CharSequence =
-            i18n(
-                    "Departure at {0}, arrival at {1}",
-                    stopDateTimes.first().departureDateTime by timeFormat,
-                    stopDateTimes.last().arrivalDateTime by timeFormat
-            )
+        i18n(
+            "Departure at {0}, arrival at {1}",
+            stopDateTimes.first().departureDateTime by timeFormat,
+            stopDateTimes.last().arrivalDateTime by timeFormat
+        )
 
 
     fun sendFirstJourney(journey: Journey) = withMessage(sendFirstJourney(journey.publicTransportSections()))
@@ -128,18 +128,18 @@ sealed class SearchConnector(context: SearchDef)
 class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
 
     override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
-            flexibleListTemplate(
-                    sections.map { section ->
-                        with(section) {
-                            listElement(
-                                    title(),
-                                    content(),
-                                    trainImage
-                            )
-                        }
-                    },
-                    compact
-            )
+        flexibleListTemplate(
+            sections.map { section ->
+                with(section) {
+                    listElement(
+                        title(),
+                        content(),
+                        trainImage
+                    )
+                }
+            },
+            compact
+        )
 }
 
 /**
@@ -148,18 +148,18 @@ class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
 class GASearchConnector(context: SearchDef) : SearchConnector(context) {
 
     override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
-            gaFlexibleMessageForCarousel(
-                    sections.mapIndexed { i, section ->
-                        with(section) {
-                            carouselItem(
-                                    search,
-                                    title(),
-                                    content(),
-                                    gaImage(trainImage, "train"),
-                                    proposal[i]
-                            )
-                        }
-                    }
-            )
+        gaFlexibleMessageForCarousel(
+            sections.mapIndexed { i, section ->
+                with(section) {
+                    carouselItem(
+                        search,
+                        title(),
+                        content(),
+                        gaImage(trainImage, "train"),
+                        proposal[i]
+                    )
+                }
+            }
+        )
 }
 

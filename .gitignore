@@ -6,8 +6,10 @@
 target
 
 # IDEs and editors
-/.idea/**
-!/.idea/runConfigurations/OpenDataBot.xml
+/.idea/*
+!/.idea/runConfigurations
+/.idea/runConfigurations/Start.xml
+/.idea/runConfigurations/DockerStart.xml
 .project
 .classpath
 *.iml

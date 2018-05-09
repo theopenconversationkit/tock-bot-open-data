@@ -25,10 +25,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
  *
  */
 data class DisplayInformations(
-        val direction: String,
-        val label: String?,
-        val color: String?,
-        @JsonProperty("commercial_mode")
-        val commercialMode: String,
-        val headsign: String?) {
+    val direction: String,
+    val label: String?,
+    val color: String?,
+    @JsonProperty("commercial_mode")
+    val commercialMode: String,
+    val headsign: String?
+) {
 }

@@ -34,11 +34,13 @@ object OpenDataConfiguration {
     /**
      * Wikipedia image :)
      */
-    val trainImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/France_road_sign_ID12a.svg/238px-France_road_sign_ID12a.svg.png"
+    val trainImage =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/France_road_sign_ID12a.svg/238px-France_road_sign_ID12a.svg.png"
 
     /**
      * Wikipedia image :)
      */
-    val stationImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/%C3%89bauche_gare.svg/200px-%C3%89bauche_gare.svg.png"
+    val stationImage =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/%C3%89bauche_gare.svg/200px-%C3%89bauche_gare.svg.png"
 
 }

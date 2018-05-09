@@ -26,12 +26,12 @@ import java.time.LocalDateTime
  *
  */
 data class StopDateTime(
-        @JsonProperty("stop_point")
-        val stopPoint: StopPoint?,
-        @JsonProperty("departure_date_time")
-        val departureDateTime: LocalDateTime,
-        @JsonProperty("arrival_date_time")
-        val arrivalDateTime: LocalDateTime
+    @JsonProperty("stop_point")
+    val stopPoint: StopPoint?,
+    @JsonProperty("departure_date_time")
+    val departureDateTime: LocalDateTime,
+    @JsonProperty("arrival_date_time")
+    val arrivalDateTime: LocalDateTime
 ) {
 
 }

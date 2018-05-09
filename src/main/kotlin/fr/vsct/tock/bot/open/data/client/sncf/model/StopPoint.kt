@@ -23,7 +23,7 @@ package fr.vsct.tock.bot.open.data.client.sncf.model
  *
  */
 data class StopPoint(
-        val name: String,
-        val id: String
+    val name: String,
+    val id: String
 ) {
 }

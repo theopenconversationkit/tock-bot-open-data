@@ -28,13 +28,13 @@ import java.time.LocalTime
  *
  */
 data class StopTime(
-        @JsonProperty("stop_point")
-        val stopPoint: StopPoint?,
-        @JsonProperty("departure_time")
-        @JsonDeserialize(using = LocalTimeDeserializer::class)
-        val departureTime: LocalTime?,
-        @JsonProperty("arrival_time")
-        @JsonDeserialize(using = LocalTimeDeserializer::class)
-        val arrivalTime: LocalTime?
+    @JsonProperty("stop_point")
+    val stopPoint: StopPoint?,
+    @JsonProperty("departure_time")
+    @JsonDeserialize(using = LocalTimeDeserializer::class)
+    val departureTime: LocalTime?,
+    @JsonProperty("arrival_time")
+    @JsonDeserialize(using = LocalTimeDeserializer::class)
+    val arrivalTime: LocalTime?
 )
 

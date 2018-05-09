@@ -22,5 +22,5 @@ package fr.vsct.tock.bot.open.data.client.sncf.model
 /**
  *
  */
-data class Coordinates(val lat:Double, val lon:Double) {
+data class Coordinates(val lat: Double, val lon: Double) {
 }

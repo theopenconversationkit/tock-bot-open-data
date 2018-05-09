@@ -25,6 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
  *
  */
 data class VehicleJourney(
-        @JsonProperty("stop_times") val stopTimes: List<StopTime>
+    @JsonProperty("stop_times") val stopTimes: List<StopTime>
 ) {
 }

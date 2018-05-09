@@ -22,5 +22,5 @@ package fr.vsct.tock.bot.open.data.client.sncf.model
 /**
  *
  */
-data class ArrivalsResponse(val arrivals:List<StationStop>) {
+data class ArrivalsResponse(val arrivals: List<StationStop>) {
 }

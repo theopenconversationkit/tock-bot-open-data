@@ -26,13 +26,14 @@ import java.time.LocalDateTime
  *
  */
 data class Journey(
-        val sections: List<Section>,
-        @JsonProperty("arrival_date_time")
-        val arrivalDateTime: LocalDateTime,
-        @JsonProperty("departure_date_time")
-        val departureDateTime: LocalDateTime) {
+    val sections: List<Section>,
+    @JsonProperty("arrival_date_time")
+    val arrivalDateTime: LocalDateTime,
+    @JsonProperty("departure_date_time")
+    val departureDateTime: LocalDateTime
+) {
 
 
-    fun publicTransportSections(): List<Section> = sections.filter { it.type == "public_transport"}
+    fun publicTransportSections(): List<Section> = sections.filter { it.type == "public_transport" }
 
 }

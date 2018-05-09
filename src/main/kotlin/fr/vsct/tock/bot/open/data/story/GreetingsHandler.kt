@@ -38,18 +38,19 @@ val greetings = story("greetings") {
 
     withMessenger {
         buttonsTemplate(
-                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                postbackButton("Itineraries", search),
-                postbackButton("Departures", Departures),
-                postbackButton("Arrivals", Arrivals)
+            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+            postbackButton("Itineraries", search),
+            postbackButton("Departures", Departures),
+            postbackButton("Arrivals", Arrivals)
         )
     }
     withGoogleAssistant {
         gaMessage(
-                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                "Itineraries",
-                "Departures",
-                "Arrivals")
+            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+            "Itineraries",
+            "Departures",
+            "Arrivals"
+        )
     }
 
     end()

@@ -25,5 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
  *
  */
 data class VehicleJourneysResponse(
-        @JsonProperty("vehicle_journeys") val vehicleJourney: List<VehicleJourney>) {
+    @JsonProperty("vehicle_journeys") val vehicleJourney: List<VehicleJourney>
+) {
 }

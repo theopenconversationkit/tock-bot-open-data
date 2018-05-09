@@ -30,8 +30,8 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import java.time.LocalDateTime
 
 val arrivals = storyWithSteps<ScoreboardSteps>(
-        Arrivals,
-        secondaryIntents = setOf(indicate_location, indicate_origin, more_elements, select)
+    Arrivals,
+    secondaryIntents = setOf(indicate_location, indicate_origin, more_elements, select)
 )
 
 object Arrivals : Scoreboard() {
@@ -52,11 +52,11 @@ class ArrivalsDef(bus: BotBus) : ScoreboardDef(bus) {
 
     override fun timeFor(stop: StationStop): LocalDateTime = stop.stopDateTime.arrivalDateTime
 
-    override fun itemTitle(stop: StationStop): CharSequence
-            = i18n(
-            "{0} {1}",
-            stop.displayInformations.commercialMode,
-            stop.displayInformations.headsign)
+    override fun itemTitle(stop: StationStop): CharSequence = i18n(
+        "{0} {1}",
+        stop.displayInformations.commercialMode,
+        stop.displayInformations.headsign
+    )
 
     override val itemSubtitleMessage = "Arrival at {0}"
 

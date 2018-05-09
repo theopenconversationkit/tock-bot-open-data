@@ -32,9 +32,9 @@ import fr.vsct.tock.bot.open.data.client.sncf.model.StationStop
 import java.time.LocalDateTime
 
 val departures = storyWithSteps<ScoreboardSteps>(
-        Departures,
-        otherStarterIntents = setOf(indicate_location),
-        secondaryIntents = setOf(indicate_origin, more_elements, select)
+    Departures,
+    otherStarterIntents = setOf(indicate_location),
+    secondaryIntents = setOf(indicate_origin, more_elements, select)
 )
 
 /**
@@ -60,8 +60,7 @@ class DeparturesDef(bus: BotBus) : ScoreboardDef(bus) {
 
     override fun timeFor(stop: StationStop): LocalDateTime = stop.stopDateTime.departureDateTime
 
-    override fun itemTitle(stop: StationStop): CharSequence
-            = i18n("Direction {0}", stop.displayInformations.direction)
+    override fun itemTitle(stop: StationStop): CharSequence = i18n("Direction {0}", stop.displayInformations.direction)
 
     override val itemSubtitleMessage = "Departure {0}"
 }
