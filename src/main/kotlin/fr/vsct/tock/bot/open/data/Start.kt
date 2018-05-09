@@ -52,9 +52,10 @@ object Start {
         //add evaluation for [PlaceValue] after nlp response
         BotRepository.registerNlpListener(OpenDataNlpListener)
 
+        //register the bot
         registerAndInstallBot(openBot)
 
-        //initialize model and config
+        //load NLP model and i18n labels
         importNlpDump("/bot_open_data.json")
         importI18nDump("/labels.json")
     }

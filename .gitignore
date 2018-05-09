@@ -6,7 +6,8 @@
 target
 
 # IDEs and editors
-/.idea
+/.idea/**
+!/.idea/runConfigurations/OpenDataBot.xml
 .project
 .classpath
 *.iml
