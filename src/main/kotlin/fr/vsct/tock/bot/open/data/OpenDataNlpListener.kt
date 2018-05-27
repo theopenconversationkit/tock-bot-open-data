@@ -1,7 +1,7 @@
 package fr.vsct.tock.bot.open.data
 
-import fr.vsct.tock.bot.engine.dialog.ContextValue
 import fr.vsct.tock.bot.engine.dialog.Dialog
+import fr.vsct.tock.bot.engine.dialog.EntityValue
 import fr.vsct.tock.bot.engine.nlp.NlpListener
 import fr.vsct.tock.bot.engine.user.UserTimeline
 import fr.vsct.tock.bot.open.data.client.sncf.SncfOpenDataClient.findPlace
@@ -24,13 +24,13 @@ object OpenDataNlpListener : NlpListener {
         userTimeline: UserTimeline,
         dialog: Dialog,
         nlpResult: NlpResult
-    ): List<ContextValue> {
+    ): List<EntityValue> {
         //evaluate localities
         return nlpResult
             .entities
             .filter { it.entity.entityType == locationEntity.entityType }
             .mapNotNull { entityValue ->
-                findPlace(nlpResult.entityTextContent(entityValue))?.let { ContextValue(entityValue.entity, it) }
+                findPlace(nlpResult.entityTextContent(entityValue))?.let { EntityValue(entityValue.entity, it) }
             }
     }
 }
