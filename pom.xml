@@ -35,18 +35,18 @@
 
         <kotlin>1.2.41</kotlin>
         <tock>1.0.2-SNAPSHOT</tock>
-        <guava>25.0-jre</guava>
+        <guava>25.1-jre</guava>
 
         <junit-platform>1.2.0</junit-platform>
         <junit-jupiter>5.2.0</junit-jupiter>
-        <mockk>1.7.17</mockk>
+        <mockk>1.8.3</mockk>
 
         <plugin.surefire>2.21.0</plugin.surefire>
         <plugin.source>3.0.1</plugin.source>
         <plugin.release>2.5.3</plugin.release>
         <plugin.gpg>1.6</plugin.gpg>
         <plugin.nexus-staging>1.6.8</plugin.nexus-staging>
-        <plugin.dokka.version>0.9.16</plugin.dokka.version>
+        <plugin.dokka.version>0.9.17</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     </properties>
