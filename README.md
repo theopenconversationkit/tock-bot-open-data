@@ -15,30 +15,12 @@ The setup is explained in the [Tock docker project](https://github.com/voyages-s
 
 * Start the docker-compose file for the NLP stack (explained [here](https://github.com/voyages-sncf-technologies/tock-docker#user-content-docker-images-for-tock))
 
-* You will need a (free) [SNCF Open Data key](https://data.sncf.com/) and to set the environment var (see [OpenDataConfiguration](https://github.com/voyages-sncf-technologies/tock-bot-open-data/blob/master/src/main/kotlin/fr/vsct/tock/bot/open/data/OpenDataConfiguration.kt#L29))
+* You will need a (free) [SNCF Open Data key](https://data.sncf.com/) and to set the environment var (see [OpenDataConfiguration](https://github.com/voyages-sncf-technologies/tock-bot-open-data/blob/master/src/main/kotlin/fr/vsct/tock/bot/open/data/OpenDataConfiguration.kt#L29)).
 
-* To setup messenger (optional), you need a Messenger application with "messages" and "messaging_postbacks" webhook events activated (look at the [Facebook documentation](https://developers.facebook.com/docs/messenger-platform/guides/quick-start)). 
-
-    * Set the messenger environment variables (see [MessengerConfiguration](https://github.com/voyages-sncf-technologies/tock-bot-open-data/blob/master/src/main/kotlin/fr/vsct/tock/bot/open/data/MessengerConfiguration.kt#L29))
-
-    * Also a secure ssl tunnel (for example [ngrok](https://ngrok.com/)) is required to test the bot directly on your desktop:
-
-        ```sh 
-            ngrok http 8080
-        ``` 
-
-    * Take the ngrok value (ie  https://xxxx.ngrok.io ) and use it in the webhook interface of messenger settings, to specify :
-        * the url : https://xxxx.ngrok.io/messenger
-        * the verify token you set in tock_bot_open_data_webhook_verify_token env var
+* To setup messenger (optional), you need a Messenger application with "messages" and "messaging_postbacks" webhook events activated - look at the [Facebook documentation](https://developers.facebook.com/docs/messenger-platform/guides/quick-start) and 
+[Tock Messenger Configuration](https://github.com/voyages-sncf-technologies/tock/tree/master/bot/connector-messenger) instructions.
         
-* To setup Google Assistant (optional), you need a Google account and a Google Actions project with Actions sdk setup - see https://developers.google.com/actions/sdk/create-a-project
-      
-     * Also a secure ssl tunnel (for example [ngrok](https://ngrok.com/)) is required to test the bot directly on your desktop:
-           
-              ```sh 
-                  ngrok http 8080
-              ```     
+* To setup Google Assistant (optional), you need a Google account and a Google Actions project with Actions sdk setup - see [Google Actions configuration](https://developers.google.com/actions/sdk/create-a-project)
+and  [Tock Google Assistant configuration](https://github.com/voyages-sncf-technologies/tock/tree/master/bot/connector-ga).
 
-     * A sample action project configuration is available here : [google_actions_fr.json](https://raw.githubusercontent.com/voyages-sncf-technologies/tock-bot-open-data/master/src/main/resources/google_actions_fr.json) - you will need to set the ngrok host.      
-
-* In the end you have to launch the class fr.vsct.tock.bot.open.data.StartKt. The bot is up! :)              
+* In the end you have to start the OpenDataBot launcher in IntelliJ. The bot is up! :)              
