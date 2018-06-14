@@ -33,7 +33,7 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>1.2.41</kotlin>
+        <kotlin>1.2.50</kotlin>
         <tock>1.1.1-SNAPSHOT</tock>
         <guava>25.1-jre</guava>
 
