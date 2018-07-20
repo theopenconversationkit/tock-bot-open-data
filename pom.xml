@@ -33,13 +33,13 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>1.2.50</kotlin>
+        <kotlin>1.2.51</kotlin>
         <tock>1.2.0-SNAPSHOT</tock>
         <guava>25.1-jre</guava>
 
         <junit-platform>1.2.0</junit-platform>
         <junit-jupiter>5.2.0</junit-jupiter>
-        <mockk>1.8.3</mockk>
+        <mockk>1.8.5</mockk>
 
         <plugin.surefire>2.21.0</plugin.surefire>
         <plugin.source>3.0.1</plugin.source>
