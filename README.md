@@ -1,3 +1,4 @@
+[![Gitter](https://badges.gitter.im/tockchat/Lobby.svg)](https://gitter.im/tockchat/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
 [![Build Status](https://travis-ci.org/voyages-sncf-technologies/tock-bot-open-data.png)](https://travis-ci.org/voyages-sncf-technologies/tock-bot-open-data)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.vsct.tock/tock-bot-open-data/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.vsct.tock/tock-bot-open-data)
 
