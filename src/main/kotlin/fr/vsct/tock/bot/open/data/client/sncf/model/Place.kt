@@ -19,15 +19,19 @@
 
 package fr.vsct.tock.bot.open.data.client.sncf.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  *
  */
 interface Place {
 
+    @get:JsonProperty("embedded_type")
     val embeddedType: String
     val quality: Int
     val name: String
     val label: String?
     val id: String
+    @get:JsonProperty("coord")
     val coordinates: Coordinates?
 }
