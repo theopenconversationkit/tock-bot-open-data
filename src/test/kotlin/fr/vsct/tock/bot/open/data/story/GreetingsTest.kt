@@ -24,6 +24,7 @@ import fr.vsct.tock.bot.connector.ga.gaMessage
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
 import fr.vsct.tock.bot.open.data.rule.OpenDataJUnitExtension
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import java.util.Locale
@@ -85,6 +86,7 @@ class GreetingsTest {
     }
 
     @Test
+    @DisplayName("greetings messenger fr")
     fun `greetings story displays welcome message with Messenger dedicated message WHEN context contains Messenger connector and fr locale`() {
         ext.send(locale = Locale.FRENCH) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
