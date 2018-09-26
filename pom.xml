@@ -33,12 +33,13 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>1.2.61</kotlin>
+        <kotlin>1.2.71</kotlin>
         <tock>1.2.2-SNAPSHOT</tock>
         <guava>26.0-jre</guava>
 
-        <junit-jupiter>5.3.0</junit-jupiter>
-        <mockk>1.8.6</mockk>
+        <junit-jupiter>5.3.1</junit-jupiter>
+        <mockk>1.8.7</mockk>
+        <byte-buddy>1.8.22</byte-buddy>
 
         <plugin.surefire>2.22.0</plugin.surefire>
         <plugin.source>3.0.1</plugin.source>
@@ -100,6 +101,17 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <sourceDirectory>${sourceDirectory}</sourceDirectory>
