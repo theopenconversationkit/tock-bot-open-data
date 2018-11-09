@@ -22,6 +22,7 @@ package fr.vsct.tock.bot.open.data
 import fr.vsct.tock.bot.definition.IntentDef
 import fr.vsct.tock.bot.definition.bot
 import fr.vsct.tock.bot.open.data.story.arrivals
+import fr.vsct.tock.bot.open.data.story.askIdentity
 import fr.vsct.tock.bot.open.data.story.changeLanguage
 import fr.vsct.tock.bot.open.data.story.departures
 import fr.vsct.tock.bot.open.data.story.greetings
@@ -38,7 +39,8 @@ val openBot = bot(
         departures,
         arrivals,
         search,
-        changeLanguage
+        changeLanguage,
+        askIdentity
     ),
     hello = greetings
 )
@@ -61,9 +63,13 @@ enum class SecondaryIntent : IntentDef {
      */
     more_elements,
     /**
-     * select intent
+     * select intent.
      */
-    select
+    select,
+    /**
+     * cancel intent.
+     */
+    cancel
 }
 
 /**

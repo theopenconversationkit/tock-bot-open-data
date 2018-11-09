@@ -44,7 +44,6 @@ var BotBus.destination: PlaceValue?
     get() = entityValue(destinationEntity)
     set(value) = changeEntityValue(destinationEntity, value)
 
-
 val BotBus.departureDate: LocalDateTime?
     get() = entityValue<DateEntityRange>(departureDateEntity)?.start()?.withZoneSameInstant(defaultZoneId)?.toLocalDateTime()
 
