@@ -34,7 +34,7 @@
       }
     ],
     "defaultLabel": "Arrival at {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_arrivals_Arrivals at {0}:",
@@ -71,7 +71,7 @@
       }
     ],
     "defaultLabel": "Arrivals at {0}:",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_arrivals_From which station would you like to see the arrivals?",
@@ -108,30 +108,7 @@
       }
     ],
     "defaultLabel": "From which station would you like to see the arrivals?",
-    "version": 1
-  },
-  {
-    "_id": "app_arrivals_which_station_would_you_like_to_see_the_arrivals_from_",
-    "namespace": "app",
-    "category": "arrivals",
-    "i18n": [
-      {
-        "locale": "en",
-        "interfaceType": "textChat",
-        "label": "From which station would you like to see the arrivals?",
-        "validated": true,
-        "alternatives": []
-      },
-      {
-        "locale": "fr",
-        "interfaceType": "textChat",
-        "label": "De quelle gare souhaitez vous voir les arrivées?",
-        "validated": true,
-        "alternatives": []
-      }
-    ],
-    "defaultLabel": "From which station would you like to see the arrivals?",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_arrivals_Next arrivals",
@@ -168,7 +145,7 @@
       }
     ],
     "defaultLabel": "Next arrivals",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_arrivals_Oops, no arrival currently found, sorry :(",
@@ -205,7 +182,7 @@
       }
     ],
     "defaultLabel": "Oops, no arrival currently found, sorry :(",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_arrivals_{0} {1}",
@@ -242,7 +219,7 @@
       }
     ],
     "defaultLabel": "{0} {1}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_change_language_Language switch to {0}",
@@ -265,7 +242,7 @@
       }
     ],
     "defaultLabel": "Language switch to {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_Departure {0}",
@@ -302,7 +279,7 @@
       }
     ],
     "defaultLabel": "Departure {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_Departures from: {0}",
@@ -339,7 +316,7 @@
       }
     ],
     "defaultLabel": "Departures from: {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_Direction {0}",
@@ -376,7 +353,7 @@
       }
     ],
     "defaultLabel": "Direction {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_From which station would you like to see the departures?",
@@ -413,30 +390,7 @@
       }
     ],
     "defaultLabel": "From which station would you like to see the departures?",
-    "version": 1
-  },
-  {
-    "_id": "app_departures_what_station_do_you_want_to_see_the_departures_from_",
-    "namespace": "app",
-    "category": "departures",
-    "i18n": [
-      {
-        "locale": "en",
-        "interfaceType": "textChat",
-        "label": "From which station would you like to see the departures?",
-        "validated": true,
-        "alternatives": []
-      },
-      {
-        "locale": "fr",
-        "interfaceType": "textChat",
-        "label": "De quelle gare souhaitez vous voir les départs?",
-        "validated": true,
-        "alternatives": []
-      }
-    ],
-    "defaultLabel": "From which station would you like to see the departures?",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_Next departures",
@@ -473,7 +427,7 @@
       }
     ],
     "defaultLabel": "Next departures",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_departures_Oops, no departure currently found, sorry :(",
@@ -510,7 +464,7 @@
       }
     ],
     "defaultLabel": "Oops, no departure currently found, sorry :(",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_Arrivals",
@@ -533,7 +487,7 @@
       }
     ],
     "defaultLabel": "Arrivals",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_Departures",
@@ -556,7 +510,7 @@
       }
     ],
     "defaultLabel": "Departures",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_It is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
@@ -579,7 +533,7 @@
       }
     ],
     "defaultLabel": "It is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_Itineraries",
@@ -602,7 +556,7 @@
       }
     ],
     "defaultLabel": "Itineraries",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
@@ -625,7 +579,7 @@
       }
     ],
     "defaultLabel": "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock",
@@ -648,7 +602,7 @@
       }
     ],
     "defaultLabel": "This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_greetings_Welcome to the Tock Open Data Bot! :)",
@@ -671,7 +625,7 @@
       }
     ],
     "defaultLabel": "Welcome to the Tock Open Data Bot! :)",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_keywords_Sorry, I didn't understand :(",
@@ -687,7 +641,7 @@
       }
     ],
     "defaultLabel": "Sorry, I didn't understand :(",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_Departure at {0}, arrival at {1}",
@@ -724,7 +678,7 @@
       }
     ],
     "defaultLabel": "Departure at {0}, arrival at {1}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_Departure on {0}",
@@ -761,7 +715,7 @@
       }
     ],
     "defaultLabel": "Departure on {0}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_For which destination?",
@@ -784,7 +738,7 @@
       }
     ],
     "defaultLabel": "For which destination?",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_For which origin?",
@@ -821,7 +775,7 @@
       }
     ],
     "defaultLabel": "For which origin?",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_From {0} to {1}",
@@ -858,7 +812,7 @@
       }
     ],
     "defaultLabel": "From {0} to {1}",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_Here is the first proposal:",
@@ -895,7 +849,7 @@
       }
     ],
     "defaultLabel": "Here is the first proposal:",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_When?",
@@ -932,7 +886,7 @@
       }
     ],
     "defaultLabel": "When?",
-    "version": 1
+    "version": 2
   },
   {
     "_id": "app_search_{0} - {1}",
@@ -969,6 +923,6 @@
       }
     ],
     "defaultLabel": "{0} - {1}",
-    "version": 1
+    "version": 2
   }
 ]
