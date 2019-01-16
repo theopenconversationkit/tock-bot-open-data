@@ -36,22 +36,22 @@ val greetings = story("greetings") {
     send("Welcome to the Tock Open Data Bot! :)")
     send("This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock")
 
-    withMessenger {
-        buttonsTemplate(
-            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-            postbackButton("Itineraries", search),
-            postbackButton("Departures", Departures),
-            postbackButton("Arrivals", Arrivals)
-        )
+    end {
+        withMessenger {
+            buttonsTemplate(
+                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                postbackButton("Itineraries", search),
+                postbackButton("Departures", Departures),
+                postbackButton("Arrivals", Arrivals)
+            )
+        }
+        withGoogleAssistant {
+            gaMessage(
+                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                "Itineraries",
+                "Departures",
+                "Arrivals"
+            )
+        }
     }
-    withGoogleAssistant {
-        gaMessage(
-            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-            "Itineraries",
-            "Departures",
-            "Arrivals"
-        )
-    }
-
-    end()
 }

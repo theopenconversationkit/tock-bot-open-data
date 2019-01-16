@@ -70,20 +70,20 @@ enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
 
         override val intent: IntentAware? = SecondaryIntent.select
         override fun answer(): ScoreboardDef.() -> Any? = {
-            if (displayedStops.isEmpty()) {
-                end("No proposal to choose. :(")
-            }
-            if (ordinal < 0 || ordinal >= displayedStops.size) {
-                end("I do not find this proposal. :(")
-            } else {
-                val stop = displayedStops[ordinal]
-                stop.findVehicleId()
-                    ?.let { SncfOpenDataClient.vehicleJourney(it) }
-                    ?.also {
-                        connector?.displayDetails(it)
-                        end()
-                    }
-                        ?: end("Trip not found")
+            end {
+                if (displayedStops.isEmpty()) {
+                    "No proposal to choose. :("
+                } else if (ordinal < 0 || ordinal >= displayedStops.size) {
+                    "I do not find this proposal. :("
+                } else {
+                    val stop = displayedStops[ordinal]
+                    stop.findVehicleId()
+                        ?.let { SncfOpenDataClient.vehicleJourney(it) }
+                        ?.also { journey ->
+                            connector?.displayDetails(journey)
+                        }
+                            ?: "Trip not found"
+                }
             }
         }
     },
@@ -211,7 +211,8 @@ abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus)
  */
 sealed class ScoreboardConnector(context: ScoreboardDef) : ConnectorDef<ScoreboardDef>(context) {
 
-    fun ScoreboardDef.subtitle(stop: StationStop): CharSequence = i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
+    fun ScoreboardDef.subtitle(stop: StationStop): CharSequence =
+        i18n(itemSubtitleMessage, timeFor(stop) by timeFormat)
 
     fun display(trains: List<StationStop>, nextDate: LocalDateTime) =
         withMessage(connectorDisplay(trains, nextDate).invoke(context))
