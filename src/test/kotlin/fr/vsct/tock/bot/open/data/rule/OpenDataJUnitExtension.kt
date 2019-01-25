@@ -24,9 +24,9 @@ import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.provider
 import fr.vsct.tock.bot.open.data.openBot
 import fr.vsct.tock.bot.test.junit.TockJUnit5Extension
+import fr.vsct.tock.bot.test.testTranslatorModule
 import fr.vsct.tock.translator.Translator
 import fr.vsct.tock.translator.TranslatorEngine
-import testTranslatorModule
 
 /**
  *
