@@ -39,7 +39,7 @@
 
         <byte-buddy>1.9.8</byte-buddy>
         <junit-jupiter>5.4.0-RC1</junit-jupiter>
-        <mockk>1.9.kotlin12</mockk>
+        <mockk>1.9</mockk>
 
         <plugin.surefire>3.0.0-M3</plugin.surefire>
         <plugin.source>3.0.1</plugin.source>
