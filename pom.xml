@@ -35,8 +35,6 @@
 
         <kotlin>1.3.20</kotlin>
         <tock>2.0.2-SNAPSHOT</tock>
-        <guava>27.0.1-jre</guava>
-
         <byte-buddy>1.9.8</byte-buddy>
         <junit-jupiter>5.4.0-RC1</junit-jupiter>
         <mockk>1.9</mockk>
@@ -56,12 +54,6 @@
             <groupId>fr.vsct.tock</groupId>
             <artifactId>bot-toolkit</artifactId>
             <version>${tock}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava}</version>
         </dependency>
 
         <dependency>
