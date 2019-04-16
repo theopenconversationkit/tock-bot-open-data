@@ -24,6 +24,10 @@ import fr.vsct.tock.bot.connector.ga.withGoogleAssistant
 import fr.vsct.tock.bot.connector.messenger.buttonsTemplate
 import fr.vsct.tock.bot.connector.messenger.postbackButton
 import fr.vsct.tock.bot.connector.messenger.withMessenger
+import fr.vsct.tock.bot.connector.slack.slackAttachment
+import fr.vsct.tock.bot.connector.slack.slackButton
+import fr.vsct.tock.bot.connector.slack.slackMessage
+import fr.vsct.tock.bot.connector.slack.withSlack
 import fr.vsct.tock.bot.definition.story
 
 /**
@@ -51,6 +55,17 @@ val greetings = story("greetings") {
                 "Itineraries",
                 "Departures",
                 "Arrivals"
+            )
+        }
+        withSlack {
+            slackMessage(
+                "Hey!",
+                slackAttachment(
+                    "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
+                    slackButton("Itineraries", search),
+                    slackButton("Departures", Departures),
+                    slackButton("Arrivals", Arrivals)
+                )
             )
         }
     }
