@@ -9,6 +9,8 @@ import fr.vsct.tock.bot.engine.BotRepository
 import fr.vsct.tock.bot.engine.ConnectorController
 import fr.vsct.tock.bot.engine.action.Action
 import fr.vsct.tock.bot.engine.event.Event
+import fr.vsct.tock.bot.engine.user.PlayerId
+import fr.vsct.tock.bot.engine.user.UserPreferences
 import fr.vsct.tock.shared.Executor
 import fr.vsct.tock.shared.injector
 import fr.vsct.tock.shared.jackson.mapper
@@ -16,7 +18,8 @@ import fr.vsct.tock.shared.provide
 import io.vertx.ext.web.RoutingContext
 import mu.KotlinLogging
 
-val sampleRestConnectorType = ConnectorType("sample")
+internal const val SAMPLE_CONNECTOR_ID = "sample"
+val sampleRestConnectorType = ConnectorType(SAMPLE_CONNECTOR_ID)
 
 class SampleRestConnector internal constructor(
     val applicationId: String,
@@ -55,7 +58,7 @@ class SampleRestConnector internal constructor(
         try {
             logger.debug { "Google Assistant request input : $body" }
             val request: SampleConnectorRequest = mapper.readValue(body)
-            val callback = SampleRestConnectorCallback(applicationId, context)
+            val callback = SampleRestConnectorCallback(applicationId, request.locale, context)
             controller.handle(request.toEvent(applicationId), ConnectorData(callback))
         } catch (t: Throwable) {
             BotRepository.requestTimer.throwable(t, timerData)
@@ -74,6 +77,13 @@ class SampleRestConnector internal constructor(
             }
         } else {
             logger.trace { "unsupported event: $event" }
+        }
+    }
+
+    override fun loadProfile(callback: ConnectorCallback, userId: PlayerId): UserPreferences {
+        callback as SampleRestConnectorCallback
+        return UserPreferences().apply {
+            locale = callback.locale
         }
     }
 
