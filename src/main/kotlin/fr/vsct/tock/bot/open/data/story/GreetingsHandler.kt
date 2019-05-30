@@ -29,6 +29,9 @@ import fr.vsct.tock.bot.connector.slack.slackButton
 import fr.vsct.tock.bot.connector.slack.slackMessage
 import fr.vsct.tock.bot.connector.slack.withSlack
 import fr.vsct.tock.bot.definition.story
+import fr.vsct.tock.bot.open.data.connector.sampleButton
+import fr.vsct.tock.bot.open.data.connector.sampleMessage
+import fr.vsct.tock.bot.open.data.connector.withSample
 
 /**
  * The greetings handler.
@@ -66,6 +69,14 @@ val greetings = story("greetings") {
                     slackButton("Departures", Departures),
                     slackButton("Arrivals", Arrivals)
                 )
+            )
+        }
+        withSample {
+            sampleMessage(
+                "Hey!",
+                sampleButton("Itineraries", search),
+                sampleButton("Departures", Departures),
+                sampleButton("Arrivals", Arrivals)
             )
         }
     }

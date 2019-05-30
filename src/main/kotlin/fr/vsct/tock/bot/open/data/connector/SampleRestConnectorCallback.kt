@@ -7,10 +7,12 @@ import fr.vsct.tock.bot.engine.event.Event
 import fr.vsct.tock.shared.jackson.mapper
 import io.vertx.ext.web.RoutingContext
 import mu.KotlinLogging
+import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
 internal class SampleRestConnectorCallback(
     applicationId: String,
+    val locale: Locale,
     private val context: RoutingContext,
     private val actions: MutableList<Action> = CopyOnWriteArrayList()
 ) : ConnectorCallbackBase(applicationId, sampleRestConnectorType) {
@@ -27,7 +29,16 @@ internal class SampleRestConnectorCallback(
     }
 
     fun sendResponse() {
-        val texts = actions.filterIsInstance<SendSentence>().mapNotNull { it.stringText }
-        context.response().end(mapper.writeValueAsString(SampleConnectorResponse(texts)))
+        val messages = actions
+            .filterIsInstance<SendSentence>()
+            .mapNotNull {
+                if (it.stringText != null) {
+                    SampleMessage(it.stringText!!)
+                } else it.message(sampleRestConnectorType)?.let {
+                    it as? SampleMessage
+                }
+
+            }
+        context.response().end(mapper.writeValueAsString(SampleConnectorResponse(messages)))
     }
 }
