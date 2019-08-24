@@ -56,7 +56,7 @@ class SampleRestConnector internal constructor(
     ) {
         val timerData = BotRepository.requestTimer.start("sample_webhook")
         try {
-            logger.debug { "Google Assistant request input : $body" }
+            logger.debug { "Sample request input : $body" }
             val request: SampleConnectorRequest = mapper.readValue(body)
             val callback = SampleRestConnectorCallback(applicationId, request.locale, context)
             controller.handle(request.toEvent(applicationId), ConnectorData(callback))
