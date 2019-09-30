@@ -582,26 +582,26 @@
     "version": 2
   },
   {
-    "_id": "app_greetings_This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock",
+    "_id": "app_greetings_This is a Tock framework demonstration bot: https://github.com/theopenconversationkit/tock",
     "namespace": "app",
     "category": "greetings",
     "i18n": [
       {
         "locale": "en",
         "interfaceType": "textChat",
-        "label": "This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock",
+        "label": "This is a Tock framework demonstration bot: https://github.com/theopenconversationkit/tock",
         "validated": true,
         "alternatives": []
       },
       {
         "locale": "fr",
         "interfaceType": "textChat",
-        "label": "Il s'agit d'un bot de démonstration du framework Tock : https://github.com/voyages-sncf-technologies/tock",
+        "label": "Il s'agit d'un bot de démonstration du framework Tock : https://github.com/theopenconversationkit/tock",
         "validated": true,
         "alternatives": []
       }
     ],
-    "defaultLabel": "This is a Tock framework demonstration bot: https://github.com/voyages-sncf-technologies/tock",
+    "defaultLabel": "This is a Tock framework demonstration bot: https://github.com/theopenconversationkit/tock",
     "version": 2
   },
   {

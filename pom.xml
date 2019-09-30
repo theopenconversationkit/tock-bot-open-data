@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~  This file is part of the tock-bot-open-data distribution.
-  ~  (https://github.com/voyages-sncf-technologies/tock-bot-open-data)
+  ~  (https://github.com/theopenconversationkit/tock-bot-open-data)
   ~  Copyright (c) 2017 VSCT.
   ~
   ~  This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.vsct.tock</groupId>
+    <groupId>ai.tock</groupId>
     <artifactId>tock-bot-open-data</artifactId>
-    <version>19.3.4-SNAPSHOT</version>
+    <version>19.9.0-SNAPSHOT</version>
     <name>Tock Bot Open Data</name>
     <description>A example of bot built with Tock using open data APIs</description>
-    <url>https://github.com/voyages-sncf-technologies/tock-bot-open-data</url>
+    <url>https://github.com/theopenconversationkit/tock-bot-open-data</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +34,7 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>1.3.50</kotlin>
-        <tock>19.3.4-SNAPSHOT</tock>
+        <tock>19.9.0-SNAPSHOT</tock>
         <byte-buddy>1.10.1</byte-buddy>
         <junit-jupiter>5.5.1</junit-jupiter>
         <mockk>1.9.3</mockk>
@@ -51,13 +51,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>fr.vsct.tock</groupId>
+            <groupId>ai.tock</groupId>
             <artifactId>bot-toolkit</artifactId>
             <version>${tock}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.vsct.tock</groupId>
+            <groupId>ai.tock</groupId>
             <artifactId>bot-test</artifactId>
             <version>${tock}</version>
             <scope>test</scope>
@@ -219,6 +219,19 @@
 
     <repositories>
         <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-tock-tock</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/tock/tock</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
             <id>maven-snapshots</id>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <layout>default</layout>
@@ -233,14 +246,14 @@
 
     <inceptionYear>2017</inceptionYear>
     <organization>
-        <name>voyages-sncf-technologies</name>
+        <name>theopenconversationkit</name>
     </organization>
     <developers>
         <developer>
             <id>jburet_vsct</id>
             <name>Julien Buret</name>
             <email>jburet@voyages-sncf.com</email>
-            <organization>voyages-sncf-technologies</organization>
+            <organization>theopenconversationkit</organization>
             <organizationUrl>https://www.voyages-sncf.com/</organizationUrl>
         </developer>
     </developers>
@@ -255,10 +268,10 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:voyages-sncf-technologies/tock-bot-open-data.git</connection>
-        <developerConnection>scm:git:git@github.com:voyages-sncf-technologies/tock-bot-open-data.git
+        <connection>scm:git:git@github.com:theopenconversationkit/tock-bot-open-data.git</connection>
+        <developerConnection>scm:git:git@github.com:theopenconversationkit/tock-bot-open-data.git
         </developerConnection>
-        <url>git@github.com:voyages-sncf-technologies/tock-bot-open-data.git</url>
+        <url>git@github.com:theopenconversationkit/tock-bot-open-data.git</url>
         <tag>HEAD</tag>
     </scm>
 
