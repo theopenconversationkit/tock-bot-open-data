@@ -44,7 +44,7 @@ object Departures : Scoreboard() {
 
     override val missingOriginMessage = "From which station would you like to see the departures?"
 
-    override fun newHandlerDefinition(bus: BotBus): ScoreboardDef = DeparturesDef(bus)
+    override fun newHandlerDefinition(bus: BotBus, data: Any?): ScoreboardDef = DeparturesDef(bus)
 
 }
 
