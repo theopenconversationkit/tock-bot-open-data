@@ -25,9 +25,8 @@ import ai.tock.bot.connector.ga.carouselItem
 import ai.tock.bot.connector.ga.gaFlexibleMessageForCarousel
 import ai.tock.bot.connector.ga.gaImage
 import ai.tock.bot.connector.messenger.MessengerHandler
-import ai.tock.bot.connector.messenger.flexibleListTemplate
-import ai.tock.bot.connector.messenger.listElement
-import ai.tock.bot.connector.messenger.model.send.ListElementStyle.compact
+import ai.tock.bot.connector.messenger.genericElement
+import ai.tock.bot.connector.messenger.genericTemplate
 import ai.tock.bot.definition.ConnectorDef
 import ai.tock.bot.definition.HandlerDef
 import ai.tock.bot.definition.ParameterKey
@@ -128,17 +127,16 @@ sealed class SearchConnector(context: SearchDef) : ConnectorDef<SearchDef>(conte
 class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
 
     override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
-        flexibleListTemplate(
+        genericTemplate(
             sections.map { section ->
                 with(section) {
-                    listElement(
+                    genericElement(
                         title(),
                         content(),
                         trainImage
                     )
                 }
-            },
-            compact
+            }
         )
 }
 
