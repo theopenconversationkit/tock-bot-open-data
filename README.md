@@ -16,7 +16,7 @@ The setup is explained in the [Tock docker project](https://github.com/theopenco
 
 * Start the docker-compose file for the NLP stack (explained [here](https://github.com/theopenconversationkit/tock-docker#user-content-docker-images-for-tock))
 
-* You will need a (free) [SNCF Open Data key](https://data.sncf.com/) and to set the environment var (see [OpenDataConfiguration](https://github.com/theopenconversationkit/tock-bot-open-data/blob/master/src/main/kotlin/ai/tock/bot/open/data/OpenDataConfiguration.kt#L29)).
+* You will need a (free) [SNCF Open Data key](https://data.sncf.com/) and to set the environment var (see [OpenDataConfiguration](https://github.com/theopenconversationkit/tock-bot-open-data/blob/master/src/main/kotlin/OpenDataConfiguration.kt#L32)).
 
 * To setup messenger (optional), you need a Messenger application with "messages" and "messaging_postbacks" webhook events activated - look at the [Facebook documentation](https://developers.facebook.com/docs/messenger-platform/guides/quick-start) and 
 [Tock Messenger Configuration](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-messenger) instructions.
