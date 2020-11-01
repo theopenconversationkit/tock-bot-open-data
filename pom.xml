@@ -34,8 +34,8 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>1.4.10</kotlin>
-        <tock>20.9.1-SNAPSHOT</tock>
-        <byte-buddy>1.10.16</byte-buddy>
+        <tock>20.9.1</tock>
+        <byte-buddy>1.10.18</byte-buddy>
         <junit-jupiter>5.7.0</junit-jupiter>
         <mockk>1.10.2</mockk>
 
@@ -44,7 +44,7 @@
         <plugin.release>3.0.0-M1</plugin.release>
         <plugin.gpg>1.6</plugin.gpg>
         <plugin.nexus-staging>1.6.8</plugin.nexus-staging>
-        <plugin.dokka.version>1.4.10</plugin.dokka.version>
+        <plugin.dokka.version>1.4.10.2</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     </properties>
