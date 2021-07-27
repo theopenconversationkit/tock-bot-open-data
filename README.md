@@ -1,5 +1,5 @@
 [![Gitter](https://badges.gitter.im/tockchat/Lobby.svg)](https://gitter.im/tockchat/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
-[![Build Status](https://travis-ci.org/theopenconversationkit/tock-bot-open-data.png)](https://travis-ci.org/theopenconversationkit/tock-bot-open-data)
+[![Build Status](https://travis-ci.com/theopenconversationkit/tock-bot-open-data.png)](https://travis-ci.com/theopenconversationkit/tock-bot-open-data)
 [![Maven Central](https://img.shields.io/maven-central/v/ai.tock/tock-bot-open-data.svg)](https://search.maven.org/search?q=tock-bot-open-data)
 
 Example of chatbot using [Tock](https://github.com/theopenconversationkit/tock) and open data APIs.
