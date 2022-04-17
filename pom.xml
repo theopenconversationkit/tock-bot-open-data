@@ -34,7 +34,7 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>1.6.20</kotlin>
-        <tock>22.3.0</tock>
+        <tock>22.3.1-SNAPSHOT</tock>
         <byte-buddy>1.12.9</byte-buddy>
         <junit-jupiter>5.8.2</junit-jupiter>
         <mockk>1.12.3</mockk>
