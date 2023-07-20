@@ -44,7 +44,7 @@
         <plugin.release>3.0.0-M6</plugin.release>
         <plugin.gpg>3.0.1</plugin.gpg>
         <plugin.nexus-staging>1.6.13</plugin.nexus-staging>
-        <plugin.dokka.version>1.9.0</plugin.dokka.version>
+        <plugin.dokka.version>1.8.20</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
     </properties>
