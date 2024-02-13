@@ -34,10 +34,10 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>1.9.21</kotlin>
-        <tock>23.9.2-SNAPSHOT</tock>
-        <byte-buddy>1.14.10</byte-buddy>
-        <junit-jupiter>5.10.1</junit-jupiter>
-        <mockk>1.13.8</mockk>
+        <tock>23.9.2</tock>
+        <byte-buddy>1.14.11</byte-buddy>
+        <junit-jupiter>5.10.2</junit-jupiter>
+        <mockk>1.13.9</mockk>
 
         <plugin.surefire>3.0.0-M7</plugin.surefire>
         <plugin.source>3.2.1</plugin.source>
