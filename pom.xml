@@ -33,18 +33,18 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>2.1.0</kotlin>
-        <tock>24.9.7-SNAPSHOT</tock>
-        <byte-buddy>1.15.11</byte-buddy>
+        <kotlin>2.1.10</kotlin>
+        <tock>24.9.7</tock>
+        <byte-buddy>1.17.1</byte-buddy>
         <junit-jupiter>5.11.4</junit-jupiter>
-        <mockk>1.13.14</mockk>
+        <mockk>1.13.16</mockk>
 
-        <plugin.surefire>3.5.0</plugin.surefire>
+        <plugin.surefire>3.5.2</plugin.surefire>
         <plugin.source>3.3.1</plugin.source>
         <plugin.release>3.1.1</plugin.release>
-        <plugin.gpg>3.2.6</plugin.gpg>
+        <plugin.gpg>3.2.7</plugin.gpg>
         <plugin.nexus-staging>1.7.0</plugin.nexus-staging>
-        <plugin.dokka.version>1.9.20</plugin.dokka.version>
+        <plugin.dokka.version>2.0.0</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
     </properties>
