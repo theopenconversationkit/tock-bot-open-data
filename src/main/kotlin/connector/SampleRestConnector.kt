@@ -39,7 +39,7 @@ class SampleRestConnector internal constructor(
             router.post(path).handler { context ->
                 try {
                     executor.executeBlocking {
-                        handleRequest(controller, context, context.bodyAsString)
+                        handleRequest(controller, context, context.body().asString())
                     }
                 } catch (e: Throwable) {
                     context.fail(e)
