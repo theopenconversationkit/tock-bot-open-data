@@ -34,8 +34,8 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
         <kotlin>2.2.20</kotlin>
-        <tock>25.9.1-SNAPSHOT</tock>
-        <byte-buddy>1.17.7</byte-buddy>
+        <tock>25.9.1</tock>
+        <byte-buddy>1.17.8</byte-buddy>
         <junit-jupiter>6.0.0</junit-jupiter>
         <mockk>1.14.6</mockk>
 
@@ -236,11 +236,11 @@
     </organization>
     <developers>
         <developer>
-            <id>jburet_vsct</id>
+            <id>jburet</id>
             <name>Julien Buret</name>
-            <email>jburet@voyages-sncf.com</email>
+            <email>zigzago@litote.org</email>
             <organization>theopenconversationkit</organization>
-            <organizationUrl>https://www.voyages-sncf.com/</organizationUrl>
+            <organizationUrl>https://doc.tock.ai</organizationUrl>
         </developer>
     </developers>
 
