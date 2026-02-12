@@ -37,7 +37,7 @@
         <tock>25.10.7</tock>
         <byte-buddy>1.17.8</byte-buddy>
         <junit-jupiter>6.0.0</junit-jupiter>
-        <mockk>1.14.6</mockk>
+        <mockk>1.14.9</mockk>
 
         <plugin.surefire>3.5.4</plugin.surefire>
         <plugin.source>3.3.1</plugin.source>
