@@ -33,9 +33,8 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>2.4.0</kotlin>
-        <tock>26.3.4</tock>
-        <byte-buddy>1.18.11-jdk5</byte-buddy>
+        <kotlin>2.4.20</kotlin>
+        <tock>26.3.5-SNAPSHOT</tock>
         <junit-jupiter>6.1.1</junit-jupiter>
         <mockk>1.14.11</mockk>
 
@@ -53,13 +52,11 @@
         <dependency>
             <groupId>ai.tock</groupId>
             <artifactId>bot-toolkit</artifactId>
-            <version>${tock}</version>
         </dependency>
 
         <dependency>
             <groupId>ai.tock</groupId>
             <artifactId>bot-test</artifactId>
-            <version>${tock}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -83,7 +80,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
-            <version>${kotlin}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -96,11 +92,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Versions of Tock artifacts and of their dependencies (Netty, Jackson, Kotlin...) -->
             <dependency>
-                <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy</artifactId>
-                <version>${byte-buddy}</version>
-                <scope>test</scope>
+                <groupId>ai.tock</groupId>
+                <artifactId>tock-bom</artifactId>
+                <version>${tock}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
