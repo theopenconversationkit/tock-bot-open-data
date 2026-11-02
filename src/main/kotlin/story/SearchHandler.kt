@@ -20,16 +20,11 @@
 package ai.tock.bot.open.data.story
 
 import ai.tock.bot.connector.ConnectorMessage
-import ai.tock.bot.connector.ga.GAHandler
-import ai.tock.bot.connector.ga.carouselItem
-import ai.tock.bot.connector.ga.gaFlexibleMessageForCarousel
-import ai.tock.bot.connector.ga.gaImage
 import ai.tock.bot.connector.messenger.MessengerHandler
 import ai.tock.bot.connector.messenger.genericElement
 import ai.tock.bot.connector.messenger.genericTemplate
 import ai.tock.bot.definition.ConnectorDef
 import ai.tock.bot.definition.HandlerDef
-import ai.tock.bot.definition.ParameterKey
 import ai.tock.bot.definition.storyDef
 import ai.tock.bot.engine.BotBus
 import ai.tock.bot.open.data.OpenDataConfiguration.trainImage
@@ -41,7 +36,6 @@ import ai.tock.bot.open.data.client.sncf.model.Place
 import ai.tock.bot.open.data.client.sncf.model.Section
 import ai.tock.bot.open.data.story.MessageFormat.datetimeFormat
 import ai.tock.bot.open.data.story.MessageFormat.timeFormat
-import ai.tock.bot.open.data.story.SearchDef.SearchParameter.proposal
 import ai.tock.translator.by
 import java.time.LocalDateTime
 
@@ -74,13 +68,8 @@ val search = storyDef<SearchDef>(
 /**
  * The search handler definition.
  */
-@GAHandler(GASearchConnector::class)
 @MessengerHandler(MessengerSearchConnector::class)
 class SearchDef(bus: BotBus) : HandlerDef<SearchConnector>(bus) {
-
-    enum class SearchParameter : ParameterKey {
-        proposal
-    }
 
     private val d: Place = bus.destination!!
     private val o: Place = bus.origin!!
@@ -134,27 +123,6 @@ class MessengerSearchConnector(context: SearchDef) : SearchConnector(context) {
                         title(),
                         content(),
                         trainImage
-                    )
-                }
-            }
-        )
-}
-
-/**
- * Google Assistant specific behaviour.
- */
-class GASearchConnector(context: SearchDef) : SearchConnector(context) {
-
-    override fun sendFirstJourney(sections: List<Section>): ConnectorMessage =
-        gaFlexibleMessageForCarousel(
-            sections.mapIndexed { i, section ->
-                with(section) {
-                    carouselItem(
-                        search,
-                        title(),
-                        content(),
-                        gaImage(trainImage, "train"),
-                        proposal[i]
                     )
                 }
             }

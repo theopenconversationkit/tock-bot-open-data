@@ -19,8 +19,6 @@
 
 package ai.tock.bot.open.data.story
 
-import ai.tock.bot.connector.ga.gaConnectorType
-import ai.tock.bot.connector.ga.gaMessage
 import ai.tock.bot.connector.messenger.buttonsTemplate
 import ai.tock.bot.connector.messenger.postbackButton
 import org.junit.jupiter.api.DisplayName
@@ -56,22 +54,6 @@ class GreetingsTest : BaseTest() {
     }
 
     @Test
-    fun `greetings story displays welcome message with GA dedicated message WHEN context contains GA connector`() {
-        send(connectorType = gaConnectorType) {
-            firstAnswer.assertText("Welcome to the Tock Open Data Bot! :)")
-            secondAnswer.assertText("This is a Tock framework demonstration bot: https://github.com/theopenconversationkit/tock")
-            lastAnswer.assertMessage(
-                    gaMessage(
-                            "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                            "Itineraries",
-                            "Departures",
-                            "Arrivals"
-                    )
-            )
-        }
-    }
-
-    @Test
     fun `greetings story displays welcome message WHEN locale is fr`() {
         send(locale = Locale.FRENCH) {
             firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
@@ -91,22 +73,6 @@ class GreetingsTest : BaseTest() {
                             postbackButton("Itinéraires", search),
                             postbackButton("Départs", Departures),
                             postbackButton("Arrivées", Arrivals)
-                    )
-            )
-        }
-    }
-
-    @Test
-    fun `greetings story displays welcome message with GA dedicated message WHEN context contains GA connector AND fr locale`() {
-        send(connectorType = gaConnectorType, locale = Locale.FRENCH) {
-            firstAnswer.assertText("Bienvenue chez le Bot Open Data Sncf! :)")
-            secondAnswer.assertText("Il s'agit d'un bot de démonstration du framework Tock : https://github.com/theopenconversationkit/tock")
-            lastAnswer.assertMessage(
-                    gaMessage(
-                            "Il est volontairement très limité, mais demandez lui un itinéraire ou les départs à partir d'une gare et constatez le résultat! :)",
-                            "Itinéraires",
-                            "Départs",
-                            "Arrivées"
                     )
             )
         }

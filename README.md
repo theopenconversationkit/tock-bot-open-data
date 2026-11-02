@@ -21,7 +21,5 @@ The setup is explained in the [Tock docker project](https://github.com/theopenco
 * To setup messenger (optional), you need a Messenger application with "messages" and "messaging_postbacks" webhook events activated - look at the [Facebook documentation](https://developers.facebook.com/docs/messenger-platform/guides/quick-start) and 
 [Tock Messenger Configuration](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-messenger) instructions.
         
-* To setup Google Assistant (optional), you need a Google account and a Google Actions project with Actions sdk setup - see [Google Actions configuration](https://developers.google.com/actions/sdk/create-a-project)
-and  [Tock Google Assistant configuration](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-ga).
 
 * In the end you have to start the OpenDataBot launcher in IntelliJ. The bot is up! :)              

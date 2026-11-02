@@ -33,19 +33,20 @@
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
-        <kotlin>2.4.20</kotlin>
-        <tock>26.9.0</tock>
+        <kotlin>2.4.21</kotlin>
+        <tock>26.9.1</tock>
         <junit-jupiter>6.1.3</junit-jupiter>
         <mockk>1.14.11</mockk>
 
-        <plugin.surefire>3.6.0</plugin.surefire>
+        <plugin.surefire>3.6.1</plugin.surefire>
         <plugin.source>3.4.0</plugin.source>
         <plugin.release>3.3.1</plugin.release>
         <plugin.gpg>3.2.8</plugin.gpg>
-        <plugin.publishing-maven>0.11.0</plugin.publishing-maven>
+        <plugin.publishing-maven>0.12.0</plugin.publishing-maven>
         <plugin.dokka.version>2.2.0</plugin.dokka.version>
 
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
+        <maven.version.ignore>(?i).*-(alpha|beta|m|rc)([-.]?\d+)?</maven.version.ignore>
     </properties>
 
     <dependencies>

@@ -19,8 +19,6 @@
 
 package ai.tock.bot.open.data.story
 
-import ai.tock.bot.connector.ga.gaMessage
-import ai.tock.bot.connector.ga.withGoogleAssistant
 import ai.tock.bot.connector.messenger.buttonsTemplate
 import ai.tock.bot.connector.messenger.postbackButton
 import ai.tock.bot.connector.messenger.withMessenger
@@ -50,14 +48,6 @@ val greetings = story("greetings") {
                 postbackButton("Itineraries", search),
                 postbackButton("Departures", Departures),
                 postbackButton("Arrivals", Arrivals)
-            )
-        }
-        withGoogleAssistant {
-            gaMessage(
-                "The bot is very limited, but ask him a route or the next departures from a station in France, and see the result! :)",
-                "Itineraries",
-                "Departures",
-                "Arrivals"
             )
         }
         withSlack {

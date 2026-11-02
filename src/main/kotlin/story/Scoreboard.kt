@@ -20,10 +20,6 @@
 package ai.tock.bot.open.data.story
 
 import ai.tock.bot.connector.ConnectorMessage
-import ai.tock.bot.connector.ga.GAHandler
-import ai.tock.bot.connector.ga.carouselItem
-import ai.tock.bot.connector.ga.gaFlexibleMessageForCarousel
-import ai.tock.bot.connector.ga.gaImage
 import ai.tock.bot.connector.messenger.MessengerHandler
 import ai.tock.bot.connector.messenger.genericElement
 import ai.tock.bot.connector.messenger.genericTemplate
@@ -46,7 +42,6 @@ import ai.tock.bot.open.data.client.sncf.model.StationStop
 import ai.tock.bot.open.data.client.sncf.model.VehicleJourney
 import ai.tock.bot.open.data.story.ChoiceParameter.nextResultDate
 import ai.tock.bot.open.data.story.ChoiceParameter.nextResultOrigin
-import ai.tock.bot.open.data.story.ChoiceParameter.proposal
 import ai.tock.bot.open.data.story.MessageFormat.timeFormat
 import ai.tock.bot.open.data.story.ScoreboardDef.ContextKey.currentStops
 import ai.tock.bot.open.data.story.ScoreboardDef.ContextKey.startDate
@@ -59,7 +54,7 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 enum class ChoiceParameter : ParameterKey {
-    nextResultDate, nextResultOrigin, proposal
+    nextResultDate, nextResultOrigin
 }
 
 enum class ScoreboardSteps : StoryStep<ScoreboardDef> {
@@ -123,7 +118,6 @@ abstract class Scoreboard : Handler<ScoreboardDef>() {
 
 }
 
-@GAHandler(GAScoreboardConnector::class)
 @MessengerHandler(MessengerScoreboardConnector::class)
 abstract class ScoreboardDef(bus: BotBus) : HandlerDef<ScoreboardConnector>(bus) {
 
@@ -266,45 +260,3 @@ class MessengerScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector
     }
 }
 
-/**
- * Google Assistant specific behaviour.
- */
-class GAScoreboardConnector(context: ScoreboardDef) : ScoreboardConnector(context) {
-
-    override fun connectorDisplay(
-        trains: List<StationStop>,
-        nextDate: LocalDateTime
-    ): ScoreboardDef.() -> ConnectorMessage = {
-        gaFlexibleMessageForCarousel(
-            trains.mapIndexed { i, it ->
-                with(it) {
-                    carouselItem(
-                        intent!!,
-                        itemTitle(it),
-                        subtitle(it),
-                        gaImage(trainImage, "train"),
-                        proposal[i]
-                    )
-                }
-            },
-            listOf(nextMessage)
-        )
-    }
-
-    override fun connectorDisplayDetails(journey: VehicleJourney): ScoreboardDef.() -> ConnectorMessage = {
-        gaFlexibleMessageForCarousel(
-            journey.stopTimes.take(10).mapIndexed { i, it ->
-                with(it) {
-                    carouselItem(
-                        SecondaryIntent.select,
-                        (it.stopPoint?.name ?: "").raw,
-                        it.departureTime.formatWith(timeFormat, userPreferences.locale),
-                        gaImage(stationImage, "station"),
-                        proposal[i]
-                    )
-                }
-            }
-        )
-    }
-
-}
